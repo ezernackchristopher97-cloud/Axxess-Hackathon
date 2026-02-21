@@ -34,25 +34,25 @@ interface CaregiverContact {
 const DEMO_CONTACTS: CaregiverContact[] = [
   {
     id: '1',
-    name: 'Sarah Ezernack',
-    relationship: 'Spouse / Primary Caregiver',
-    phone: '(318) 555-0142',
+    name: '',
+    relationship: 'Primary Caregiver',
+    phone: '',
     isPrimary: true,
     notifyOnHighRisk: true,
   },
   {
     id: '2',
-    name: 'Dr. Sarah Chen',
+    name: '',
     relationship: 'Neurologist',
-    phone: '(214) 555-0198',
+    phone: '',
     isPrimary: false,
     notifyOnHighRisk: true,
   },
   {
     id: '3',
-    name: 'James Ezernack',
-    relationship: 'Brother',
-    phone: '(318) 555-0267',
+    name: '',
+    relationship: 'Emergency Contact',
+    phone: '',
     isPrimary: false,
     notifyOnHighRisk: false,
   },
@@ -64,7 +64,7 @@ const DEMO_ALERTS: CaregiverAlert[] = [
     type: 'risk',
     severity: 'warning',
     title: 'Elevated Flare Risk',
-    message: 'Stability score dropped to 58/100. Tremor intensity increased over the past 2 hours. Monitor closely.',
+    message: 'Stability score dropped to 58/100. Symptom intensity increased over the past 2 hours. Monitor closely.',
     timestamp: new Date(Date.now() - 30 * 60000).toISOString(),
     acknowledged: false,
   },
@@ -73,7 +73,7 @@ const DEMO_ALERTS: CaregiverAlert[] = [
     type: 'medication',
     severity: 'info',
     title: 'Medication Taken',
-    message: 'Carbidopa-Levodopa 25/100mg taken at 11:02 AM (2 minutes late).',
+    message: 'Scheduled medication taken at 11:02 AM (2 minutes late).',
     timestamp: new Date(Date.now() - 120 * 60000).toISOString(),
     acknowledged: true,
   },
@@ -81,8 +81,8 @@ const DEMO_ALERTS: CaregiverAlert[] = [
     id: '3',
     type: 'freeze',
     severity: 'critical',
-    title: 'Freeze Episode Detected',
-    message: 'Freeze episode reported at kitchen doorway. Duration: ~45 seconds. Patient recovered independently.',
+    title: 'Episode Detected',
+    message: 'Neurological episode reported. Duration: ~45 seconds. Patient recovered independently.',
     timestamp: new Date(Date.now() - 240 * 60000).toISOString(),
     acknowledged: true,
   },
@@ -100,7 +100,7 @@ const DEMO_ALERTS: CaregiverAlert[] = [
     type: 'system',
     severity: 'info',
     title: 'Daily Summary Available',
-    message: 'Yesterday\'s summary: 1 freeze episode, 3/4 medications on time, stability score avg 62/100.',
+    message: 'Yesterday\'s summary: 1 episode, 3/4 medications on time, stability score avg 62/100.',
     timestamp: new Date(Date.now() - 720 * 60000).toISOString(),
     acknowledged: true,
   },
@@ -137,7 +137,7 @@ export default function CaregiverScreen() {
       type: 'risk',
       severity: 'critical',
       title: 'FLARE RISK THRESHOLD CROSSED',
-      message: 'Stability score dropped below 40/100. Tremor intensity: HIGH. Freeze risk: ELEVATED. Caregiver notification sent. Recommend immediate check-in.',
+      message: 'Stability score dropped below 40/100. Symptom intensity: HIGH. Episode risk: ELEVATED. Caregiver notification sent. Recommend immediate check-in.',
       timestamp: new Date().toISOString(),
       acknowledged: false,
     };
@@ -161,7 +161,7 @@ export default function CaregiverScreen() {
     switch (type) {
       case 'risk': return '⚠';
       case 'medication': return '💊';
-      case 'freeze': return '🧊';
+      case 'freeze': return '⚠';
       case 'fall': return '🚨';
       case 'mood': return '🧠';
       default: return '📋';

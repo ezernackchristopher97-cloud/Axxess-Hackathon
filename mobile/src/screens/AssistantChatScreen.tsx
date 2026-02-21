@@ -22,7 +22,7 @@ interface DisplayMessage {
   timestamp: Date;
 }
 
-const SYSTEM_PROMPT = `You are NeuroSync Care Assistant, a supportive health information companion for patients with Parkinson's disease and related neurological conditions. 
+const SYSTEM_PROMPT = `You are NeuroSync Care Assistant, a supportive health information companion for patients with neurological conditions. You support any neurological diagnosis, including but not limited to movement disorders, neurodegenerative conditions, epilepsy, multiple sclerosis, and more.
 
 CONSTRAINTS:
 - Informational support only. Never diagnose, prescribe, or replace medical professionals.
@@ -33,11 +33,11 @@ CONSTRAINTS:
 - Use plain language.`;
 
 const QUICK_PROMPTS = [
-  'How can I manage morning tremors?',
-  'Tips for freeze episodes',
+  'How can I manage my symptoms?',
+  'Tips for handling episodes',
   'When should I call my caregiver?',
   'Help with medication timing',
-  'Sleep tips for Parkinson\'s',
+  'Sleep tips for neurological health',
 ];
 
 export default function AssistantChatScreen() {

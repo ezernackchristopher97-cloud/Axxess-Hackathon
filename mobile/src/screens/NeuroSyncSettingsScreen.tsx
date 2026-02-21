@@ -69,15 +69,15 @@ export default function NeuroSyncSettingsScreen() {
               "I built this from the inside."
             </Text>
             <Text style={styles.narrativeBody}>
-              I'm Christopher Ezernack — a Parkinson's patient 
-              who relies on caregiver coordination, provider communication, and first responder 
+              I'm Christopher Ezernack. I live with a neurological condition and 
+              rely on caregiver coordination, provider communication, and first responder 
               awareness every day.
             </Text>
             <Text style={styles.narrativeBody}>
-              As someone living with Parkinson's, I don't just need reminders. I need 
+              I don't just need reminders. I need 
               prediction, synchronization, and protection. My caregiver needs different data 
-              than my neurologist. First responders need to know I'm not intoxicated — I have 
-              a movement disorder.
+              than my neurologist. First responders need to know what they're seeing is a 
+              neurological condition, not something else.
             </Text>
             <Text style={styles.narrativeBody}>
               This app bridges the gap between patient, caregiver, clinician, and first 
@@ -175,7 +175,7 @@ export default function NeuroSyncSettingsScreen() {
                 A unified mobile health platform that combines predictive risk scoring, 
                 caregiver coordination, AI-powered clinical documentation, and emergency 
                 preparedness — designed specifically for patients with chronic neurological 
-                conditions like Parkinson's disease.
+                conditions.
               </Text>
 
               <Text style={styles.modalSectionTitle}>Architecture</Text>

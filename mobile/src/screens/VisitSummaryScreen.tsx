@@ -15,7 +15,7 @@ import { colors, spacing, fontSize, borderRadius } from '../utils/theme';
 import { useDemoMode } from '../contexts/DemoContext';
 import { summarizeVisitNotes } from '../services/featherless';
 
-const SAMPLE_NOTES = `Patient Christopher Ezernack, 27yo male with Parkinson's disease and dystonia, presents for follow-up. Reports increased tremor frequency over past week, especially mornings before first dose. Two freeze episodes this week, both at doorway transitions. Sleep remains disrupted with possible REM behavior disorder symptoms. Cold weather has worsened dystonia. Currently on Carbidopa-Levodopa 25/100 TID, Pramipexole 0.5mg BID, Amantadine 100mg QD. Medication adherence 92%. No falls this week. Caregiver reports patient seems more fatigued than usual. Plan to increase Carbidopa-Levodopa to QID, consider PT referral for freeze episodes, recommend sleep study. Follow-up 4 weeks.`;
+const SAMPLE_NOTES = `Patient presents for neurological follow-up. Reports changes in symptom frequency over the past week, particularly in the morning before first medication dose. Two episodes noted this week. Sleep remains disrupted. Environmental factors have worsened secondary symptoms. Current medication regimen reviewed. Medication adherence 92%. No falls this week. Caregiver reports patient seems more fatigued than usual. Plan to adjust medication timing, consider therapy referral, recommend further diagnostic workup. Follow-up 4 weeks.`;
 
 export default function VisitSummaryScreen() {
   const { isDemoMode } = useDemoMode();

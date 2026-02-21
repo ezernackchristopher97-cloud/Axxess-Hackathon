@@ -318,7 +318,7 @@
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Primary Diagnosis</label>
-            <input class="form-input" id="pDiagnosis" placeholder="e.g. Parkinson's Disease — Stage 2">
+            <input class="form-input" id="pDiagnosis" placeholder="e.g. Parkinson's, MS, Epilepsy, ALS, Alzheimer's, TBI, Stroke">
           </div>
           <div class="form-group">
             <label class="form-label">Secondary Conditions (comma separated)</label>
@@ -344,7 +344,7 @@
           <div class="stat-change neutral">Enter medications below</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Freeze Episodes</div>
+          <div class="stat-label">Symptom Episodes</div>
           <div class="stat-value" style="color: var(--text-muted);" id="dashFreezeCount">—</div>
           <div class="stat-change neutral">Log via caregiver alerts</div>
         </div>
@@ -397,7 +397,7 @@
           </div>
           <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
             <div style="display: flex; gap: 8px;">
-              <input class="form-input" id="activityInput" placeholder="Log an event (e.g. freeze episode, medication taken)">
+              <input class="form-input" id="activityInput" placeholder="Log an event (e.g. symptom episode, medication taken, therapy session)">
               <button class="btn btn-secondary btn-sm" onclick="addActivity()">Log</button>
             </div>
           </div>
@@ -413,11 +413,11 @@
           <div class="card-subtitle">Adjust sliders to match current symptom levels</div>
           <div style="margin-top: 20px;">
             <div class="form-group">
-              <label class="form-label">Morning Tremor Intensity: <span id="tremorVal">0.5</span></label>
+              <label class="form-label">Primary Symptom Intensity: <span id="tremorVal">0.5</span></label>
               <input type="range" min="0" max="100" value="50" id="tremorSlider" oninput="updateSliderVal('tremor')" style="width:100%;accent-color:var(--primary);">
             </div>
             <div class="form-group">
-              <label class="form-label">Freeze Episode Frequency: <span id="freezingVal">0.3</span></label>
+              <label class="form-label">Episode Frequency: <span id="freezingVal">0.3</span></label>
               <input type="range" min="0" max="100" value="30" id="freezingSlider" oninput="updateSliderVal('freezing')" style="width:100%;accent-color:var(--primary);">
             </div>
             <div class="form-group">
@@ -550,7 +550,7 @@
         <div class="card-title">Visit Summary Generator</div>
         <div class="card-subtitle">Powered by Featherless AI — DeepSeek-V3</div>
         <div style="margin-top: 16px;">
-          <textarea class="textarea" id="visitNotes" placeholder="Type or paste clinical visit notes here...&#10;&#10;Example: Patient presents for routine follow-up. Reports increased tremor frequency over the past week. Two freeze episodes this week. Sleep has been poor. Current medications: ..."></textarea>
+          <textarea class="textarea" id="visitNotes" placeholder="Type or paste clinical visit notes here...&#10;&#10;Example: Patient presents for routine follow-up. Reports changes in symptom frequency over the past week. Sleep has been poor. Current medications: ..."></textarea>
           <div style="display: flex; gap: 12px; margin-top: 16px;">
             <button class="btn btn-primary" onclick="generateSummary('structured')" id="structuredBtn">Generate Structured Note</button>
             <button class="btn btn-secondary" onclick="generateSummary('patient-friendly')" id="patientBtn">Generate Patient Summary</button>
@@ -723,7 +723,7 @@
         name, dob, mrn, provider, diagnosis, conditions, bloodType,
         medications: medList, alerts: alertList, careTeam: teamList, riskScore: riskInfo,
         toSystemPrompt: function() {
-          return 'You are NeuroSync Care, a clinical decision support assistant specializing in neurological conditions, particularly Parkinson\'s disease. Provide evidence-based, concise responses. Always remind that this is informational support, not medical advice.\n\n'
+          return 'You are NeuroSync Care, a clinical decision support assistant specializing in neurological conditions including Parkinson\'s disease, Multiple Sclerosis, Epilepsy, ALS, Alzheimer\'s, Traumatic Brain Injury, Stroke recovery, Huntington\'s, Dystonia, Essential Tremor, Myasthenia Gravis, and other neurological disorders. Provide evidence-based, condition-specific responses. Always remind that this is informational support, not medical advice.\n\n'
             + 'CURRENT PATIENT CONTEXT (entered by clinician):\n'
             + '- Name: ' + this.name + '\n'
             + (this.dob ? '- DOB: ' + this.dob + '\n' : '')
@@ -927,9 +927,9 @@
         document.getElementById('dashSleep').style.color = symptoms.sleep > 0.5 ? '' : 'var(--warning)';
 
         // Update freeze stat
-        const freezeCount = Math.round(symptoms.freezing * 5);
-        document.getElementById('dashFreezeCount').textContent = freezeCount;
-        document.getElementById('dashFreezeCount').style.color = freezeCount > 2 ? 'var(--error)' : '';
+        const episodeCount = Math.round(symptoms.freezing * 5);
+        document.getElementById('dashFreezeCount').textContent = episodeCount;
+        document.getElementById('dashFreezeCount').style.color = episodeCount > 2 ? 'var(--error)' : '';
 
       } catch (e) {
         console.error(e);
@@ -966,7 +966,7 @@
     }
 
     function simulateFlareAlert() {
-      addAlert('critical', '<strong>FLARE ALERT</strong> — Significant tremor increase detected. ' + getPatientName() + ' may need immediate assistance.');
+      addAlert('critical', '<strong>FLARE ALERT</strong> — Significant symptom escalation detected. ' + getPatientName() + ' may need immediate assistance.');
     }
 
     // ─── Care Team ────────────────────────────────────

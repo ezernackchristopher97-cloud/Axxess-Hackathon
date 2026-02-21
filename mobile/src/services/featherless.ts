@@ -28,54 +28,45 @@ export interface ChatCompletionResponse {
 // ─── Mock Responses for Demo Mode ───────────────────────────────────────────
 
 const MOCK_CHAT_RESPONSES: Record<string, string> = {
-  default: "I understand your concern. Based on what you've described, here are some general wellness suggestions that may help:\n\n1. **Stay consistent with your medication schedule** — timing matters for dopamine management.\n2. **Monitor your symptoms** — track tremor intensity, freeze episodes, and sleep quality daily.\n3. **Stay hydrated and maintain regular meals** — this supports medication absorption.\n4. **Gentle exercise** like walking or stretching can help with stiffness.\n\n*Note: This is informational support only. Always consult your healthcare provider for medical decisions.*",
-  tremor: "Tremor management is an important part of daily life with Parkinson's. Some strategies that patients find helpful:\n\n1. **Stress reduction** — anxiety can increase tremor intensity.\n2. **Adequate sleep** — fatigue worsens motor symptoms.\n3. **Temperature awareness** — cold environments may increase stiffness and tremor.\n4. **Occupational therapy tools** — weighted utensils and adaptive devices can help.\n\n*This is general information, not medical advice. Please discuss any changes with your neurologist.*",
-  medication: "Medication timing is critical for Parkinson's management. Key points to remember:\n\n1. **Take medications at the same time daily** for consistent dopamine levels.\n2. **Protein intake** can affect levodopa absorption — some patients benefit from timing protein away from medication.\n3. **Never stop medications abruptly** — this can cause serious complications.\n4. **Track 'on' and 'off' periods** to help your doctor optimize your regimen.\n\n*Always follow your prescriber's instructions. This is informational only.*",
-  emergency: "In an emergency situation:\n\n1. **Stay calm** — if you're experiencing a freeze episode, try counting or stepping over an imaginary line.\n2. **Contact your caregiver** using the emergency alert in this app.\n3. **If you fall**, assess for injury before trying to get up.\n4. **Keep your emergency card accessible** — it contains your diagnosis, medications, and emergency contacts.\n\n*Call 911 for any life-threatening emergency.*",
+  default: "I understand your concern. Based on what you've described, here are some general wellness suggestions that may help:\n\n1. **Stay consistent with your medication schedule** as timing matters for neurological symptom management.\n2. **Monitor your symptoms** and track intensity, episode frequency, and sleep quality daily.\n3. **Stay hydrated and maintain regular meals** as this supports medication absorption and overall neurological health.\n4. **Gentle exercise** like walking or stretching can help with stiffness and cognitive function.\n\n*Note: This is informational support only. Always consult your healthcare provider for medical decisions.*",
+  symptom: "Symptom management is an important part of daily life with a neurological condition. Some strategies that patients find helpful:\n\n1. **Stress reduction** as anxiety can increase symptom intensity across many neurological conditions.\n2. **Adequate sleep** as fatigue worsens both motor and cognitive symptoms.\n3. **Temperature awareness** as environmental factors can affect neurological symptoms.\n4. **Occupational therapy tools** and adaptive devices can help with daily activities.\n\n*This is general information, not medical advice. Please discuss any changes with your neurologist.*",
+  medication: "Medication timing is critical for neurological condition management. Key points to remember:\n\n1. **Take medications at the same time daily** for consistent therapeutic levels.\n2. **Dietary interactions** can affect medication absorption, so discuss timing with your provider.\n3. **Never stop medications abruptly** as this can cause serious neurological complications.\n4. **Track symptom patterns** relative to medication timing to help your doctor optimize your regimen.\n\n*Always follow your prescriber's instructions. This is informational only.*",
+  emergency: "In an emergency situation:\n\n1. **Stay calm** and follow your emergency action plan if you have one.\n2. **Contact your caregiver** using the emergency alert in this app.\n3. **If you fall**, assess for injury before trying to get up.\n4. **Keep your emergency card accessible** as it contains your diagnosis, medications, and emergency contacts.\n\n*Call 911 for any life-threatening emergency.*",
 };
 
 const MOCK_SUMMARY_STRUCTURED = `## Visit Summary — Structured Note
 
-**Patient:** Christopher Ezernack
 **Date:** ${new Date().toLocaleDateString()}
-**Provider:** Dr. Sarah Chen, MD — Neurology
 
 ### Chief Complaint
-Patient reports increased tremor frequency over the past week, particularly in the morning before first medication dose. Reports two freeze episodes this week, both occurring during transitions (doorways).
+Patient presents for routine follow-up. Reports changes in symptom frequency and intensity over the past week. Sleep quality has been variable.
 
 ### Assessment
-- Parkinson's Disease, Stage 2 — progression noted
-- Dystonia — intermittent, cold-weather exacerbated
-- Sleep disturbance — REM behavior disorder symptoms
-
-### Current Medications
-1. Carbidopa-Levodopa 25/100 — TID
-2. Pramipexole 0.5mg — BID
-3. Amantadine 100mg — QD
+Neurological condition management reviewed. Current medication regimen evaluated. Symptom tracking data reviewed from patient logs.
 
 ### Plan
-1. Increase Carbidopa-Levodopa to QID with earlier first dose
-2. Continue monitoring freeze episodes — consider PT referral
-3. Sleep study recommended for REM behavior assessment
+1. Adjust medication timing based on symptom patterns
+2. Continue symptom monitoring and logging
+3. Consider therapy referral based on functional assessment
 4. Follow-up in 4 weeks
-5. Caregiver to monitor for dyskinesia with dose increase`;
+5. Caregiver to monitor for any new or worsening symptoms`;
 
 const MOCK_SUMMARY_PATIENT = `## Your Visit Summary — Easy to Understand
 
 **Your appointment on ${new Date().toLocaleDateString()}**
 
 ### What we talked about
-Your tremors have been happening more often, especially in the mornings. You also had two episodes where your feet felt "stuck" when walking through doorways this week.
+We reviewed how your symptoms have been over the past few weeks and looked at the data you've been tracking in the app.
 
 ### What's changing
-- **Your morning medication** will now be taken earlier and you'll take one extra dose during the day. This should help with the morning tremors.
-- **Physical therapy** may be recommended to help with the freezing episodes.
-- **A sleep study** is being considered because of your sleep difficulties.
+- **Your medication schedule** may be adjusted to better manage your symptoms throughout the day.
+- **Therapy** may be recommended to help with specific functional challenges.
+- **Additional monitoring** is being considered based on your recent symptom patterns.
 
 ### What you need to do
-1. Take your Carbidopa-Levodopa **four times a day** instead of three (your doctor will give you the new schedule).
+1. Follow your updated medication schedule as directed by your provider.
 2. Keep tracking your symptoms in this app.
-3. Have your caregiver watch for any unusual involuntary movements.
+3. Have your caregiver watch for any new or unusual symptoms.
 4. Come back in **4 weeks** for a follow-up.
 
 ### Questions?
@@ -181,13 +172,13 @@ export async function getRiskAssessment(
 function getMockChatResponse(messages: ChatMessage[]): string {
   const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || '';
   
-  if (lastMessage.includes('tremor') || lastMessage.includes('shak')) {
-    return MOCK_CHAT_RESPONSES.tremor;
+  if (lastMessage.includes('tremor') || lastMessage.includes('shak') || lastMessage.includes('symptom') || lastMessage.includes('episode')) {
+    return MOCK_CHAT_RESPONSES.symptom;
   }
-  if (lastMessage.includes('medic') || lastMessage.includes('dose') || lastMessage.includes('pill')) {
+  if (lastMessage.includes('medic') || lastMessage.includes('dose') || lastMessage.includes('pill') || lastMessage.includes('drug')) {
     return MOCK_CHAT_RESPONSES.medication;
   }
-  if (lastMessage.includes('emergency') || lastMessage.includes('fall') || lastMessage.includes('freeze')) {
+  if (lastMessage.includes('emergency') || lastMessage.includes('fall') || lastMessage.includes('help') || lastMessage.includes('911')) {
     return MOCK_CHAT_RESPONSES.emergency;
   }
   return MOCK_CHAT_RESPONSES.default;
@@ -215,11 +206,11 @@ function getMockRiskAssessment(symptoms?: Record<string, number>) {
     score: Math.round(adjustedScore * 100) / 100,
     level,
     factors: [
-      'Morning tremor intensity: moderate',
-      'Freeze episodes this week: 2',
+      'Primary symptom intensity: moderate',
+      'Episode frequency this week: variable',
       'Sleep quality: below average',
-      'Medication adherence: 92%',
-      'Last exercise: 2 days ago',
+      'Medication adherence: tracking',
+      'Last activity logged: recent',
     ],
     trend: [0.35, 0.38, 0.42, 0.40, 0.45, 0.42, adjustedScore],
   };

@@ -28,37 +28,30 @@ interface EmergencyInfo {
 }
 
 const EMERGENCY_DATA: EmergencyInfo = {
-  patientName: 'Christopher Ezernack',
-  dateOfBirth: '1997-03-15',
-  bloodType: 'O+',
-  diagnosis: "Parkinson's Disease with Dystonia",
-  allergies: ['Sulfa drugs', 'Codeine'],
-  medications: [
-    { name: 'Carbidopa-Levodopa', dosage: '25/100mg', frequency: 'QID' },
-    { name: 'Pramipexole', dosage: '0.5mg', frequency: 'BID' },
-    { name: 'Amantadine', dosage: '100mg', frequency: 'QD' },
-  ],
+  patientName: '',
+  dateOfBirth: '',
+  bloodType: '',
+  diagnosis: '',
+  allergies: [],
+  medications: [],
   emergencyContacts: [
-    { name: 'Sarah Ezernack', relationship: 'Spouse', phone: '(318) 555-0142' },
-    { name: 'Dr. Sarah Chen', relationship: 'Neurologist', phone: '(214) 555-0198' },
-    { name: 'James Ezernack', relationship: 'Brother', phone: '(318) 555-0267' },
+    { name: '', relationship: 'Primary Caregiver', phone: '' },
+    { name: '', relationship: 'Neurologist', phone: '' },
+    { name: '', relationship: 'Emergency Contact', phone: '' },
   ],
   criticalNotes: [
-    'Patient may appear confused during freeze episodes — this is NOT intoxication or psychiatric emergency.',
-    'Dystonia risk increases in cold environments — keep warm.',
-    'Autonomic instability may cause blood pressure fluctuations.',
-    'Do NOT abruptly discontinue Parkinson\'s medications — risk of neuroleptic malignant syndrome.',
-    'Patient may have difficulty communicating during "off" periods.',
+    'Review patient neurological condition before administering any medications.',
+    'Patient may have difficulty communicating during symptom episodes.',
+    'Do NOT abruptly discontinue neurological medications without consulting provider.',
   ],
   doNotDo: [
-    'Do NOT administer haloperidol or typical antipsychotics.',
-    'Do NOT administer metoclopramide (Reglan).',
-    'Do NOT restrain during dystonic episodes.',
     'Do NOT assume altered mental status is psychiatric.',
+    'Do NOT restrain during neurological episodes.',
+    'Do NOT administer contraindicated medications (see allergy list).',
   ],
-  medicalFacility: 'Axxess Home Health — Dallas, TX',
-  medicalFacilityPhone: '(214) 555-0300',
-  insuranceInfo: 'Blue Cross Blue Shield — ID: XYZ123456',
+  medicalFacility: '',
+  medicalFacilityPhone: '',
+  insuranceInfo: '',
 };
 
 export default function EmergencyCardScreen() {

@@ -30,31 +30,19 @@ interface ConditionProfile {
 }
 
 const DEMO_PROFILE: ConditionProfile = {
-  name: 'Christopher Ezernack',
-  dateOfBirth: '1997-03-15',
-  diagnosis: "Parkinson's Disease with Dystonia",
-  diagnosisDate: '2023-06-15',
-  stage: 'Stage 2 — Bilateral involvement without balance impairment',
-  symptoms: [
-    'Resting tremor (right-dominant)',
-    'Dystonia (cold-weather exacerbated)',
-    'Freeze episodes (doorway transitions)',
-    'Sleep disturbance / REM behavior disorder',
-    'Autonomic instability',
-    'Bradykinesia',
-    'Hyper-reflexive states',
-  ],
-  medications: [
-    { name: 'Carbidopa-Levodopa', dosage: '25/100mg', frequency: 'QID', time: '6:00, 11:00, 16:00, 21:00' },
-    { name: 'Pramipexole', dosage: '0.5mg', frequency: 'BID', time: '8:00, 20:00' },
-    { name: 'Amantadine', dosage: '100mg', frequency: 'QD', time: '8:00' },
-  ],
-  allergies: ['Sulfa drugs', 'Codeine'],
-  emergencyNotes: 'Patient may appear confused during freeze episodes — NOT intoxicated, NOT psychiatric. Known freeze pattern. Dystonia risk in cold environments. Autonomic instability may cause blood pressure fluctuations.',
-  primaryCaregiver: 'Sarah Ezernack',
-  caregiverPhone: '(318) 555-0142',
-  neurologist: 'Dr. Sarah Chen, MD',
-  neurologistPhone: '(214) 555-0198',
+  name: '',
+  dateOfBirth: '',
+  diagnosis: '',
+  diagnosisDate: '',
+  stage: '',
+  symptoms: [],
+  medications: [],
+  allergies: [],
+  emergencyNotes: '',
+  primaryCaregiver: '',
+  caregiverPhone: '',
+  neurologist: '',
+  neurologistPhone: '',
 };
 
 export default function PatientProfileScreen() {
@@ -199,9 +187,9 @@ export default function PatientProfileScreen() {
           <Text style={styles.sectionTitle}>Why This Exists</Text>
           <View style={styles.aboutBox}>
             <Text style={styles.aboutText}>
-              I live with Parkinson's and rely on caregiver and provider coordination daily. 
               NeuroSync Care bridges the gap between patient, caregiver, clinician, 
-              and first responder — ensuring continuity of care across every interaction.
+              and first responder for any neurological condition. It ensures continuity 
+              of care across every interaction, from daily monitoring to emergency response.
             </Text>
           </View>
         </View>

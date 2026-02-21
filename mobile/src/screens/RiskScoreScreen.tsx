@@ -33,8 +33,8 @@ interface SymptomInput {
 }
 
 const SYMPTOM_LABELS: Record<keyof SymptomInput, string> = {
-  tremor: 'Tremor Intensity',
-  freezing: 'Freeze Episodes',
+  tremor: 'Motor Symptom Intensity',
+  freezing: 'Episode Frequency',
   sleep: 'Sleep Quality',
   mood: 'Mood / Wellbeing',
   mobility: 'Mobility',
@@ -43,10 +43,10 @@ const SYMPTOM_LABELS: Record<keyof SymptomInput, string> = {
 export default function RiskScoreScreen() {
   const { isDemoMode } = useDemoMode();
   const [symptoms, setSymptoms] = useState<SymptomInput>({
-    tremor: 0.4,
-    freezing: 0.3,
-    sleep: 0.6,
-    mood: 0.7,
+    tremor: 0,
+    freezing: 0,
+    sleep: 0.5,
+    mood: 0.5,
     mobility: 0.5,
   });
   const [riskData, setRiskData] = useState<{
