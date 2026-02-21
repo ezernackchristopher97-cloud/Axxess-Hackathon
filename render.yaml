@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: neurosync-care-server
+    runtime: node
+    region: oregon
+    plan: free
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: FEATHERLESS_API_KEY
+        sync: false
+      - key: FEATHERLESS_MODEL_ID
+        value: deepseek-ai/DeepSeek-V3-0324
+      - key: PORT
+        value: 3001
