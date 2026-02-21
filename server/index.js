@@ -12,8 +12,11 @@ const FEATHERLESS_BASE_URL = 'https://api.featherless.ai/v1';
 const FEATHERLESS_API_KEY = process.env.FEATHERLESS_API_KEY || '';
 const FEATHERLESS_MODEL_ID = process.env.FEATHERLESS_MODEL_ID || 'deepseek-ai/DeepSeek-V3-0324';
 
+const path = require('path');
+
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ─── Health Check ───────────────────────────────────────────────────────────
 
@@ -82,6 +85,15 @@ app.post('/api/chat', async (req, res) => {
       return res.status(400).json({ error: 'messages array is required' });
     }
 
+    // Demo mode fallback
+    if (req.body.demoMode) {
+      const lastMsg = (messages[messages.length - 1]?.content || '').toLowerCase();
+      let mockReply = "I understand your concern. Based on what you've described, here are some general wellness suggestions:\n\n1. **Stay consistent with your medication schedule** — timing matters for dopamine management.\n2. **Monitor your symptoms** — track tremor intensity, freeze episodes, and sleep quality daily.\n3. **Stay hydrated and maintain regular meals** — this supports medication absorption.\n4. **Gentle exercise** like walking or stretching can help with stiffness.\n\n*Note: This is informational support only. Always consult your healthcare provider for medical decisions.*";
+      if (lastMsg.includes('tremor') || lastMsg.includes('shak')) mockReply = "Tremor management is an important part of daily life with Parkinson's. Some strategies that patients find helpful:\n\n1. **Stress reduction** — anxiety can increase tremor intensity.\n2. **Adequate sleep** — fatigue worsens motor symptoms.\n3. **Temperature awareness** — cold environments may increase stiffness and tremor.\n4. **Occupational therapy tools** — weighted utensils and adaptive devices can help.\n\n*This is general information, not medical advice. Please discuss any changes with your neurologist.*";
+      if (lastMsg.includes('medic') || lastMsg.includes('dose')) mockReply = "Medication timing is critical for Parkinson's management. Key points to remember:\n\n1. **Take medications at the same time daily** for consistent dopamine levels.\n2. **Protein intake** can affect levodopa absorption.\n3. **Never stop medications abruptly** — this can cause serious complications.\n4. **Track 'on' and 'off' periods** to help your doctor optimize your regimen.\n\n*Always follow your prescriber's instructions.*";
+      return res.json({ content: mockReply, model: 'demo-mode', usage: null });
+    }
+
     const data = await callFeatherless(messages);
     const content = data.choices?.[0]?.message?.content || 'No response generated.';
 
@@ -104,6 +116,13 @@ app.post('/api/summarize', async (req, res) => {
 
     if (!notes) {
       return res.status(400).json({ error: 'notes field is required' });
+    }
+
+    // Demo mode fallback
+    if (req.body.demoMode) {
+      const mockStructured = `## Visit Summary — Structured Note\n\n**Patient:** Christopher Ezernack\n**Date:** ${new Date().toLocaleDateString()}\n**Provider:** Dr. Sarah Chen, MD — Neurology\n\n### Chief Complaint\nPatient reports increased tremor frequency over the past week, particularly in the morning before first medication dose. Reports two freeze episodes this week, both occurring during transitions (doorways).\n\n### Assessment\n- Parkinson's Disease, Stage 2 — progression noted\n- Dystonia — intermittent, cold-weather exacerbated\n- Sleep disturbance — REM behavior disorder symptoms\n\n### Current Medications\n1. Carbidopa-Levodopa 25/100 — TID\n2. Pramipexole 0.5mg — BID\n3. Amantadine 100mg — QD\n\n### Plan\n1. Increase Carbidopa-Levodopa to QID with earlier first dose\n2. Continue monitoring freeze episodes — consider PT referral\n3. Sleep study recommended for REM behavior assessment\n4. Follow-up in 4 weeks\n5. Caregiver to monitor for dyskinesia with dose increase`;
+      const mockPatient = `## Your Visit Summary\n\n**Your appointment on ${new Date().toLocaleDateString()}**\n\n### What we talked about\nYour tremors have been happening more often, especially in the mornings. You also had two episodes where your feet felt "stuck" when walking through doorways this week.\n\n### What's changing\n- **Your morning medication** will now be taken earlier and you'll take one extra dose during the day.\n- **Physical therapy** may be recommended to help with the freezing episodes.\n- **A sleep study** is being considered because of your sleep difficulties.\n\n### What you need to do\n1. Take your Carbidopa-Levodopa **four times a day** instead of three.\n2. Keep tracking your symptoms in this app.\n3. Have your caregiver watch for any unusual involuntary movements.\n4. Come back in **4 weeks** for a follow-up.`;
+      return res.json({ summary: format === 'structured' ? mockStructured : mockPatient, format, model: 'demo-mode', usage: null });
     }
 
     const systemPrompt = format === 'patient-friendly'

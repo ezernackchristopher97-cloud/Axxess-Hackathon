@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeuroSync Care — Clinician Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    :root {
+      --bg: #0a1f1a;
+      --bg-light: #122a23;
+      --bg-card: #1a3d32;
+      --primary: #d4a574;
+      --primary-dark: #b8956a;
+      --primary-light: #e8c9a8;
+      --gold: #ffd700;
+      --tan: #d4a574;
+      --green: #2d5a4a;
+      --green-light: #3d7a64;
+      --text: #ffffff;
+      --text-secondary: #a0a0a0;
+      --text-muted: #666666;
+      --success: #4ade80;
+      --error: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --border: #2d5a4a;
+      --border-light: #3d7a64;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── Header ──────────────────────────────────── */
+    .header {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-left { display: flex; align-items: center; gap: 16px; }
+    .logo {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--gold));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700;
+    }
+    .header-title { font-size: 22px; font-weight: 700; color: var(--primary); }
+    .header-subtitle { font-size: 12px; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; }
+    .header-right { display: flex; align-items: center; gap: 16px; }
+    .status-badge {
+      padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .status-live { background: rgba(74,222,128,0.15); color: var(--success); }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    .demo-toggle {
+      display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-secondary);
+    }
+    .toggle-switch {
+      width: 44px; height: 24px; background: var(--border); border-radius: 12px;
+      position: relative; cursor: pointer; transition: background 0.3s;
+    }
+    .toggle-switch.active { background: var(--primary); }
+    .toggle-switch::after {
+      content: ''; position: absolute; top: 3px; left: 3px;
+      width: 18px; height: 18px; background: white; border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    .toggle-switch.active::after { transform: translateX(20px); }
+
+    /* ─── Navigation ──────────────────────────────── */
+    .nav {
+      background: var(--bg-light);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex; gap: 0; overflow-x: auto;
+    }
+    .nav-tab {
+      padding: 14px 24px; font-size: 14px; font-weight: 500;
+      color: var(--text-secondary); cursor: pointer;
+      border-bottom: 2px solid transparent; transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-tab:hover { color: var(--text); }
+    .nav-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+    /* ─── Main Layout ─────────────────────────────── */
+    .main { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ─── Cards ────────────────────────────────────── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px;
+    }
+    .card-title { font-size: 18px; font-weight: 600; color: var(--primary-light); }
+    .card-subtitle { font-size: 13px; color: var(--text-secondary); margin-top: 4px; }
+
+    /* ─── Grid ─────────────────────────────────────── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    }
+
+    /* ─── Stat Cards ───────────────────────────────── */
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+    }
+    .stat-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
+    .stat-value { font-size: 32px; font-weight: 700; margin: 8px 0 4px; }
+    .stat-change { font-size: 13px; }
+    .stat-change.up { color: var(--error); }
+    .stat-change.down { color: var(--success); }
+    .stat-change.neutral { color: var(--text-secondary); }
+
+    /* ─── Risk Gauge ───────────────────────────────── */
+    .risk-gauge {
+      width: 200px; height: 200px; margin: 0 auto 16px;
+      position: relative;
+    }
+    .risk-gauge svg { width: 100%; height: 100%; }
+    .risk-gauge-value {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .risk-gauge-number { font-size: 42px; font-weight: 700; }
+    .risk-gauge-label { font-size: 14px; color: var(--text-secondary); }
+
+    /* ─── Progress Bar ─────────────────────────────── */
+    .progress-bar {
+      height: 8px; background: var(--border); border-radius: 4px;
+      overflow: hidden; margin-top: 8px;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 4px; transition: width 0.6s ease;
+    }
+
+    /* ─── Alert List ───────────────────────────────── */
+    .alert-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(45,90,74,0.5);
+    }
+    .alert-item:last-child { border-bottom: none; }
+    .alert-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; flex-shrink: 0;
+    }
+    .alert-critical { background: rgba(239,68,68,0.15); color: var(--error); }
+    .alert-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .alert-info { background: rgba(59,130,246,0.15); color: var(--info); }
+    .alert-success { background: rgba(74,222,128,0.15); color: var(--success); }
+    .alert-text { font-size: 14px; line-height: 1.5; }
+    .alert-time { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+    /* ─── Chat ─────────────────────────────────────── */
+    .chat-container {
+      display: flex; flex-direction: column; height: 500px;
+    }
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: 16px 0;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .chat-bubble {
+      max-width: 75%; padding: 12px 16px; border-radius: 16px;
+      font-size: 14px; line-height: 1.6;
+    }
+    .chat-user {
+      align-self: flex-end;
+      background: var(--primary); color: var(--bg);
+      border-bottom-right-radius: 4px;
+    }
+    .chat-assistant {
+      align-self: flex-start;
+      background: var(--bg-light); color: var(--text);
+      border: 1px solid var(--border);
+      border-bottom-left-radius: 4px;
+    }
+    .chat-input-row {
+      display: flex; gap: 12px; padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .chat-input {
+      flex: 1; padding: 12px 16px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg-light);
+      color: var(--text); font-size: 14px; font-family: inherit;
+      outline: none;
+    }
+    .chat-input:focus { border-color: var(--primary); }
+    .chat-input::placeholder { color: var(--text-muted); }
+
+    /* ─── Buttons ──────────────────────────────────── */
+    .btn {
+      padding: 12px 24px; border-radius: 10px; font-size: 14px;
+      font-weight: 600; cursor: pointer; border: none;
+      transition: all 0.2s; font-family: inherit;
+    }
+    .btn-primary { background: var(--primary); color: var(--bg); }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--border); color: var(--text); }
+    .btn-secondary:hover { background: var(--border-light); }
+    .btn-danger { background: var(--error); color: white; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ─── Form ─────────────────────────────────────── */
+    .textarea {
+      width: 100%; padding: 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg-light);
+      color: var(--text); font-size: 14px; font-family: inherit;
+      resize: vertical; min-height: 120px; outline: none;
+    }
+    .textarea:focus { border-color: var(--primary); }
+
+    /* ─── Emergency Card ───────────────────────────── */
+    .emergency-card {
+      background: linear-gradient(135deg, #1a0000, #2d0a0a);
+      border: 2px solid var(--error);
+      border-radius: 16px; padding: 32px;
+      text-align: center;
+    }
+    .emergency-sos {
+      font-size: 64px; font-weight: 800; color: var(--error);
+      text-shadow: 0 0 30px rgba(239,68,68,0.4);
+      margin-bottom: 8px;
+    }
+    .emergency-name { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
+    .emergency-dob { font-size: 16px; color: var(--text-secondary); margin-bottom: 24px; }
+    .emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; text-align: left; margin-top: 20px; }
+    .emergency-section { background: rgba(239,68,68,0.08); border-radius: 10px; padding: 16px; }
+    .emergency-section-title { font-size: 12px; color: var(--error); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; font-weight: 600; }
+    .emergency-section-body { font-size: 14px; line-height: 1.8; }
+    .do-not { color: var(--error); font-weight: 600; }
+
+    /* ─── Summary Output ───────────────────────────── */
+    .summary-output {
+      background: var(--bg-light); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px; margin-top: 16px;
+      font-size: 14px; line-height: 1.8; white-space: pre-wrap;
+    }
+    .summary-output h2, .summary-output h3 { color: var(--primary-light); margin: 16px 0 8px; }
+    .summary-output strong { color: var(--primary); }
+
+    /* ─── Trend Chart ──────────────────────────────── */
+    .trend-chart {
+      display: flex; align-items: flex-end; gap: 8px; height: 120px; padding-top: 8px;
+    }
+    .trend-bar {
+      flex: 1; border-radius: 4px 4px 0 0; transition: height 0.6s ease;
+      position: relative; min-width: 20px;
+    }
+    .trend-bar-label {
+      position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%);
+      font-size: 10px; color: var(--text-muted); white-space: nowrap;
+    }
+
+    /* ─── Medication List ──────────────────────────── */
+    .med-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 12px 0; border-bottom: 1px solid rgba(45,90,74,0.3);
+    }
+    .med-item:last-child { border-bottom: none; }
+    .med-name { font-weight: 600; font-size: 15px; }
+    .med-dose { font-size: 13px; color: var(--text-secondary); }
+    .med-time {
+      font-size: 12px; padding: 4px 10px; border-radius: 6px;
+      background: rgba(212,165,116,0.15); color: var(--primary);
+    }
+
+    /* ─── Loading Spinner ──────────────────────────── */
+    .spinner {
+      width: 24px; height: 24px; border: 3px solid var(--border);
+      border-top-color: var(--primary); border-radius: 50%;
+      animation: spin 0.8s linear infinite; display: inline-block;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Profile Section ──────────────────────────── */
+    .profile-header {
+      display: flex; align-items: center; gap: 24px; margin-bottom: 24px;
+    }
+    .profile-avatar {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 700; color: var(--bg);
+    }
+    .profile-info h2 { font-size: 24px; font-weight: 700; }
+    .profile-info p { font-size: 14px; color: var(--text-secondary); margin-top: 4px; }
+    .profile-tags { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+    .tag {
+      padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 500;
+    }
+    .tag-primary { background: rgba(212,165,116,0.15); color: var(--primary); }
+    .tag-warning { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .tag-info { background: rgba(59,130,246,0.15); color: var(--info); }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="logo">N</div>
+      <div>
+        <div class="header-title">NeuroSync Care</div>
+        <div class="header-subtitle">Clinician Dashboard</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-badge status-live">
+        <span class="status-dot"></span>
+        <span id="statusText">Connected</span>
+      </div>
+      <div class="demo-toggle">
+        <span>Demo Mode</span>
+        <div class="toggle-switch active" id="demoToggle" onclick="toggleDemoMode()"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav">
+    <div class="nav-tab active" onclick="showPage('dashboard')">Dashboard</div>
+    <div class="nav-tab" onclick="showPage('risk')">Risk Score</div>
+    <div class="nav-tab" onclick="showPage('caregiver')">Caregiver Alerts</div>
+    <div class="nav-tab" onclick="showPage('summary')">Visit Summary</div>
+    <div class="nav-tab" onclick="showPage('chat')">Assistant</div>
+    <div class="nav-tab" onclick="showPage('emergency')">Emergency Card</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+
+    <!-- ═══ DASHBOARD PAGE ═══ -->
+    <div class="page active" id="page-dashboard">
+      <!-- Patient Profile -->
+      <div class="card">
+        <div class="profile-header">
+          <div class="profile-avatar">CE</div>
+          <div class="profile-info">
+            <h2>Christopher Ezernack</h2>
+            <p>DOB: March 15, 1997 &nbsp;|&nbsp; MRN: NSC-2026-0001 &nbsp;|&nbsp; Provider: Dr. Sarah Chen, MD</p>
+            <div class="profile-tags">
+              <span class="tag tag-primary">Parkinson's Disease — Stage 2</span>
+              <span class="tag tag-warning">Dystonia</span>
+              <span class="tag tag-info">Active Monitoring</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Row -->
+      <div class="grid-4">
+        <div class="stat-card">
+          <div class="stat-label">Risk Score</div>
+          <div class="stat-value" style="color: var(--warning);">0.42</div>
+          <div class="stat-change up">↑ 0.03 from last week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Medication Adherence</div>
+          <div class="stat-value" style="color: var(--success);">92%</div>
+          <div class="stat-change down">↑ 3% improvement</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Freeze Episodes</div>
+          <div class="stat-value" style="color: var(--error);">2</div>
+          <div class="stat-change up">↑ 1 from last week</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Sleep Quality</div>
+          <div class="stat-value" style="color: var(--info);">5.2h</div>
+          <div class="stat-change neutral">— avg this week</div>
+        </div>
+      </div>
+
+      <!-- Two Column -->
+      <div class="grid-2" style="margin-top: 20px;">
+        <!-- Medications -->
+        <div class="card">
+          <div class="card-title">Current Medications</div>
+          <div class="card-subtitle">Active prescriptions</div>
+          <div style="margin-top: 16px;">
+            <div class="med-item">
+              <div><div class="med-name">Carbidopa-Levodopa 25/100</div><div class="med-dose">Three times daily</div></div>
+              <div class="med-time">8am / 2pm / 8pm</div>
+            </div>
+            <div class="med-item">
+              <div><div class="med-name">Pramipexole 0.5mg</div><div class="med-dose">Twice daily</div></div>
+              <div class="med-time">9am / 9pm</div>
+            </div>
+            <div class="med-item">
+              <div><div class="med-name">Amantadine 100mg</div><div class="med-dose">Once daily</div></div>
+              <div class="med-time">Morning</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-title">Recent Activity</div>
+          <div class="card-subtitle">Last 24 hours</div>
+          <div style="margin-top: 16px;">
+            <div class="alert-item">
+              <div class="alert-icon alert-warning">⚡</div>
+              <div>
+                <div class="alert-text">Freeze episode detected — doorway transition</div>
+                <div class="alert-time">Today, 9:42 AM</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon alert-success">💊</div>
+              <div>
+                <div class="alert-text">Morning medication taken on schedule</div>
+                <div class="alert-time">Today, 8:01 AM</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon alert-info">📊</div>
+              <div>
+                <div class="alert-text">Risk score recalculated — moderate range</div>
+                <div class="alert-time">Today, 7:30 AM</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon alert-warning">🌙</div>
+              <div>
+                <div class="alert-text">Sleep quality below threshold — 4.8 hours</div>
+                <div class="alert-time">Last night</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ RISK SCORE PAGE ═══ -->
+    <div class="page" id="page-risk">
+      <div class="grid-2">
+        <div class="card" style="text-align: center;">
+          <div class="card-title">Entropy-Based Risk Score</div>
+          <div class="card-subtitle">BoraFramework — Shannon + Sample Entropy Analysis</div>
+          <div class="risk-gauge" style="margin-top: 24px;">
+            <svg viewBox="0 0 200 200">
+              <circle cx="100" cy="100" r="80" fill="none" stroke="#2d5a4a" stroke-width="12"/>
+              <circle cx="100" cy="100" r="80" fill="none" stroke="#f59e0b" stroke-width="12"
+                stroke-dasharray="502" stroke-dashoffset="290" stroke-linecap="round"
+                transform="rotate(-90 100 100)"/>
+            </svg>
+            <div class="risk-gauge-value">
+              <div class="risk-gauge-number" style="color: var(--warning);" id="riskScoreDisplay">0.42</div>
+              <div class="risk-gauge-label" id="riskLevelDisplay">MODERATE</div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="recalculateRisk()" id="riskBtn">Recalculate Risk</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Contributing Factors</div>
+          <div style="margin-top: 16px;">
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px;">
+                <span>Morning Tremor Intensity</span><span style="color: var(--warning);">Moderate</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 55%; background: var(--warning);"></div></div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px;">
+                <span>Freeze Episodes (7-day)</span><span style="color: var(--error);">2 episodes</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 40%; background: var(--error);"></div></div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px;">
+                <span>Sleep Quality</span><span style="color: var(--warning);">Below Average</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 45%; background: var(--warning);"></div></div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px;">
+                <span>Medication Adherence</span><span style="color: var(--success);">92%</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 92%; background: var(--success);"></div></div>
+            </div>
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 4px;">
+                <span>Physical Activity</span><span style="color: var(--info);">Moderate</span>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width: 60%; background: var(--info);"></div></div>
+            </div>
+          </div>
+
+          <div class="card-title" style="margin-top: 24px;">7-Day Trend</div>
+          <div class="trend-chart" style="margin-top: 12px;">
+            <div class="trend-bar" style="height: 42%; background: var(--green-light);"><span class="trend-bar-label">Mon</span></div>
+            <div class="trend-bar" style="height: 46%; background: var(--green-light);"><span class="trend-bar-label">Tue</span></div>
+            <div class="trend-bar" style="height: 50%; background: var(--warning);"><span class="trend-bar-label">Wed</span></div>
+            <div class="trend-bar" style="height: 48%; background: var(--warning);"><span class="trend-bar-label">Thu</span></div>
+            <div class="trend-bar" style="height: 54%; background: var(--warning);"><span class="trend-bar-label">Fri</span></div>
+            <div class="trend-bar" style="height: 50%; background: var(--warning);"><span class="trend-bar-label">Sat</span></div>
+            <div class="trend-bar" style="height: 52%; background: var(--warning);"><span class="trend-bar-label">Sun</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CAREGIVER ALERTS PAGE ═══ -->
+    <div class="page" id="page-caregiver">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Active Alerts</div>
+          <div class="card-subtitle">Real-time caregiver notifications</div>
+          <div style="margin-top: 16px;" id="alertsList">
+            <div class="alert-item">
+              <div class="alert-icon alert-critical">🚨</div>
+              <div>
+                <div class="alert-text"><strong>Freeze Episode Detected</strong> — Patient reported freeze at doorway transition. Duration: ~15 seconds.</div>
+                <div class="alert-time">Today, 9:42 AM — Requires acknowledgment</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon alert-warning">⚠️</div>
+              <div>
+                <div class="alert-text"><strong>Sleep Quality Alert</strong> — Only 4.8 hours recorded last night. Below 5-hour threshold.</div>
+                <div class="alert-time">Today, 7:15 AM</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon alert-warning">📈</div>
+              <div>
+                <div class="alert-text"><strong>Risk Score Trending Up</strong> — 7-day average increased from 0.38 to 0.42. Monitor closely.</div>
+                <div class="alert-time">Today, 7:30 AM</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon alert-success">✅</div>
+              <div>
+                <div class="alert-text"><strong>Medication Taken</strong> — Morning dose of Carbidopa-Levodopa confirmed.</div>
+                <div class="alert-time">Today, 8:01 AM</div>
+              </div>
+            </div>
+            <div class="alert-item">
+              <div class="alert-icon alert-info">📋</div>
+              <div>
+                <div class="alert-text"><strong>Appointment Reminder</strong> — Neurology follow-up with Dr. Chen in 3 days.</div>
+                <div class="alert-time">Yesterday, 6:00 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-title">Care Team</div>
+            <div style="margin-top: 16px;">
+              <div class="med-item">
+                <div><div class="med-name">Dr. Sarah Chen</div><div class="med-dose">Neurologist — Primary</div></div>
+                <div class="med-time">On Call</div>
+              </div>
+              <div class="med-item">
+                <div><div class="med-name">Maria Ezernack</div><div class="med-dose">Primary Caregiver</div></div>
+                <div class="med-time">Active</div>
+              </div>
+              <div class="med-item">
+                <div><div class="med-name">James Wilson, PT</div><div class="med-dose">Physical Therapist</div></div>
+                <div class="med-time">Next: Wed</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Quick Actions</div>
+            <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
+              <button class="btn btn-primary" onclick="simulateAlert()" style="width: 100%;">Simulate Flare Alert</button>
+              <button class="btn btn-secondary" style="width: 100%;">Send Check-In Request</button>
+              <button class="btn btn-danger" style="width: 100%;">Emergency Contact All</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VISIT SUMMARY PAGE ═══ -->
+    <div class="page" id="page-summary">
+      <div class="card">
+        <div class="card-title">Visit Summary Generator</div>
+        <div class="card-subtitle">Powered by Featherless AI — DeepSeek-V3</div>
+        <div style="margin-top: 16px;">
+          <textarea class="textarea" id="visitNotes" placeholder="Enter clinical visit notes here...">Patient Christopher Ezernack presents for routine Parkinson's follow-up. Reports increased tremor frequency over the past week, particularly in the morning before first medication dose. Two freeze episodes this week, both at doorway transitions. Sleep has been poor — averaging 4-5 hours. Medication adherence at 92%. Caregiver reports increased anxiety. Current medications: Carbidopa-Levodopa 25/100 TID, Pramipexole 0.5mg BID, Amantadine 100mg QD. Assessment: PD Stage 2, progression noted. Plan: increase Carbidopa-Levodopa to QID, consider PT referral, sleep study recommended.</textarea>
+          <div style="display: flex; gap: 12px; margin-top: 16px;">
+            <button class="btn btn-primary" onclick="generateSummary('structured')" id="structuredBtn">Generate Structured Note</button>
+            <button class="btn btn-secondary" onclick="generateSummary('patient-friendly')" id="patientBtn">Generate Patient Summary</button>
+          </div>
+        </div>
+      </div>
+      <div id="summaryOutput"></div>
+    </div>
+
+    <!-- ═══ ASSISTANT CHAT PAGE ═══ -->
+    <div class="page" id="page-chat">
+      <div class="card">
+        <div class="card-title">NeuroSync Care Assistant</div>
+        <div class="card-subtitle">Powered by Featherless AI — DeepSeek-V3</div>
+        <div class="chat-container" style="margin-top: 16px;">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-bubble chat-assistant">Hello, I'm the NeuroSync Care assistant. I can help with questions about Parkinson's management, medication timing, symptom tracking, and general wellness. How can I help today?</div>
+          </div>
+          <div class="chat-input-row">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask about symptoms, medications, or care strategies..." onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="btn btn-primary" onclick="sendChat()" id="sendBtn">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ EMERGENCY CARD PAGE ═══ -->
+    <div class="page" id="page-emergency">
+      <div class="emergency-card">
+        <div class="emergency-sos">SOS</div>
+        <div class="emergency-name">Christopher Ezernack</div>
+        <div class="emergency-dob">DOB: March 15, 1997 &nbsp;|&nbsp; Blood Type: O+ &nbsp;|&nbsp; MRN: NSC-2026-0001</div>
+        
+        <div class="emergency-grid">
+          <div class="emergency-section">
+            <div class="emergency-section-title">Primary Diagnosis</div>
+            <div class="emergency-section-body">
+              Parkinson's Disease — Stage 2<br>
+              Dystonia (intermittent)<br>
+              REM Sleep Behavior Disorder
+            </div>
+          </div>
+          <div class="emergency-section">
+            <div class="emergency-section-title">Current Medications</div>
+            <div class="emergency-section-body">
+              Carbidopa-Levodopa 25/100 — TID<br>
+              Pramipexole 0.5mg — BID<br>
+              Amantadine 100mg — QD
+            </div>
+          </div>
+          <div class="emergency-section">
+            <div class="emergency-section-title">⚠️ DO NOT Administer</div>
+            <div class="emergency-section-body">
+              <span class="do-not">Haloperidol</span><br>
+              <span class="do-not">Metoclopramide</span><br>
+              <span class="do-not">Prochlorperazine</span><br>
+              <span style="font-size: 12px; color: var(--text-muted);">These worsen Parkinson's symptoms</span>
+            </div>
+          </div>
+          <div class="emergency-section">
+            <div class="emergency-section-title">Emergency Contacts</div>
+            <div class="emergency-section-body">
+              <strong>Maria Ezernack</strong> (Caregiver)<br>
+              (318) 555-0142<br><br>
+              <strong>Dr. Sarah Chen</strong> (Neurologist)<br>
+              (214) 555-0198
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top: 20px; text-align: center;">
+        <div class="card-title">Allergies</div>
+        <div style="margin-top: 12px; font-size: 16px;">
+          <span class="tag tag-warning" style="font-size: 14px; padding: 6px 16px;">Sulfa drugs</span>
+          <span class="tag tag-warning" style="font-size: 14px; padding: 6px 16px; margin-left: 8px;">Codeine</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // ─── State ────────────────────────────────────────
+    let demoMode = true;
+    const API_BASE = window.location.origin;
+
+    // ─── Navigation ───────────────────────────────────
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('page-' + pageId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    // ─── Demo Mode Toggle ─────────────────────────────
+    function toggleDemoMode() {
+      demoMode = !demoMode;
+      const toggle = document.getElementById('demoToggle');
+      const statusText = document.getElementById('statusText');
+      toggle.classList.toggle('active', demoMode);
+      statusText.textContent = demoMode ? 'Demo Mode' : 'Live — Featherless AI';
+    }
+
+    // ─── Risk Score ───────────────────────────────────
+    async function recalculateRisk() {
+      const btn = document.getElementById('riskBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Calculating...';
+
+      try {
+        const res = await fetch(API_BASE + '/api/risk', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ symptoms: { tremor: 0.6, freezing: 0.4, sleep: 0.4, mood: 0.5 } })
+        });
+        const data = await res.json();
+        document.getElementById('riskScoreDisplay').textContent = data.score.toFixed(2);
+        document.getElementById('riskLevelDisplay').textContent = data.level.toUpperCase();
+        
+        const colors = { low: 'var(--success)', moderate: 'var(--warning)', elevated: 'var(--error)', high: 'var(--error)' };
+        document.getElementById('riskScoreDisplay').style.color = colors[data.level] || 'var(--warning)';
+      } catch (e) {
+        console.error(e);
+      }
+      
+      btn.disabled = false;
+      btn.textContent = 'Recalculate Risk';
+    }
+
+    // ─── Visit Summary ────────────────────────────────
+    async function generateSummary(format) {
+      const notes = document.getElementById('visitNotes').value;
+      if (!notes.trim()) return;
+
+      const btnId = format === 'structured' ? 'structuredBtn' : 'patientBtn';
+      const btn = document.getElementById(btnId);
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Generating...';
+
+      try {
+        const res = await fetch(API_BASE + '/api/summarize', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notes, format, demoMode })
+        });
+        const data = await res.json();
+        
+        const output = document.getElementById('summaryOutput');
+        const formatted = (data.summary || '').replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/## (.*?)(<br>|$)/g, '<h2>$1</h2>').replace(/### (.*?)(<br>|$)/g, '<h3>$1</h3>');
+        output.innerHTML = '<div class="card"><div class="card-header"><div class="card-title">' + (format === 'structured' ? 'Structured Clinical Note' : 'Patient-Friendly Summary') + '</div></div><div class="summary-output">' + formatted + '</div></div>';
+      } catch (e) {
+        console.error(e);
+        document.getElementById('summaryOutput').innerHTML = '<div class="card" style="border-color: var(--error);"><div class="card-title" style="color: var(--error);">Error generating summary</div><p style="margin-top: 8px; color: var(--text-secondary);">Check server connection and try again.</p></div>';
+      }
+
+      btn.disabled = false;
+      btn.textContent = format === 'structured' ? 'Generate Structured Note' : 'Generate Patient Summary';
+    }
+
+    // ─── Chat ─────────────────────────────────────────
+    const chatHistory = [];
+
+    async function sendChat() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      input.value = '';
+      addChatBubble(msg, 'user');
+
+      chatHistory.push({ role: 'user', content: msg });
+
+      const sendBtn = document.getElementById('sendBtn');
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<span class="spinner"></span>';
+
+      try {
+        const res = await fetch(API_BASE + '/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: chatHistory, demoMode })
+        });
+        const data = await res.json();
+        const reply = data.content || data.choices?.[0]?.message?.content || 'No response received.';
+        chatHistory.push({ role: 'assistant', content: reply });
+        addChatBubble(reply, 'assistant');
+      } catch (e) {
+        addChatBubble('Connection error — check server status.', 'assistant');
+      }
+
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send';
+    }
+
+    function addChatBubble(text, role) {
+      const container = document.getElementById('chatMessages');
+      const bubble = document.createElement('div');
+      bubble.className = 'chat-bubble chat-' + (role === 'user' ? 'user' : 'assistant');
+      bubble.innerHTML = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      container.appendChild(bubble);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // ─── Simulate Alert ───────────────────────────────
+    function simulateAlert() {
+      const alertsList = document.getElementById('alertsList');
+      const newAlert = document.createElement('div');
+      newAlert.className = 'alert-item';
+      newAlert.style.animation = 'fadeIn 0.5s ease';
+      newAlert.innerHTML = `
+        <div class="alert-icon alert-critical">🔴</div>
+        <div>
+          <div class="alert-text"><strong>FLARE ALERT</strong> — Significant tremor increase detected. Patient may need immediate assistance.</div>
+          <div class="alert-time">Just now — URGENT</div>
+        </div>
+      `;
+      alertsList.insertBefore(newAlert, alertsList.firstChild);
+    }
+
+    // ─── Init ─────────────────────────────────────────
+    fetch(API_BASE + '/api/health')
+      .then(r => r.json())
+      .then(d => {
+        const statusText = document.getElementById('statusText');
+        if (d.featherlessConfigured) {
+          statusText.textContent = 'Connected — AI Ready';
+        }
+      })
+      .catch(() => {
+        document.getElementById('statusText').textContent = 'Offline';
+      });
+  </script>
+
+</body>
+</html>

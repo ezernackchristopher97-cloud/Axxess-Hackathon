@@ -1,6 +1,6 @@
 // Featherless AI adapter — OpenAI-compatible inference
 
-const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL || 'http://localhost:3001';
+const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL || 'https://neurosync-care-server.onrender.com';
 const FEATHERLESS_BASE_URL = 'https://api.featherless.ai/v1';
 
 export interface ChatMessage {
