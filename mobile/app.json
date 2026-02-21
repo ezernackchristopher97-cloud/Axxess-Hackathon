@@ -1,0 +1,76 @@
+{
+  "expo": {
+    "name": "NeuroSync Care",
+    "slug": "neurosync-care",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0a1f1a"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.neurosynccare.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Use Face ID to securely access NeuroSync Care",
+        "NSCameraUsageDescription": "NeuroSync Care needs camera access for document scanning",
+        "NSPhotoLibraryUsageDescription": "NeuroSync Care needs photo library access to upload images",
+        "ITSAppUsesNonExemptEncryption": false
+      },
+      "config": {
+        "usesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0a1f1a"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.neurosynccare.app",
+      "versionCode": 1,
+      "permissions": [
+        "USE_BIOMETRIC",
+        "USE_FINGERPRINT",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Allow NeuroSync Care to use Face ID for authentication"
+        }
+      ]
+    ],
+    "extra": {
+      "serverUrl": "http://localhost:3001",
+      "eas": {
+        "projectId": "neurosync-care"
+      }
+    },
+    "owner": "neurosynccare",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    }
+  }
+}
