@@ -6,4 +6,3 @@ dist/
 build/
 .DS_Store
 *.tgz
-server/.env
