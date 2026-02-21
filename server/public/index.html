@@ -622,13 +622,124 @@
   </div>
 
   <script>
-    // ─── State ────────────────────────────────────────
+       // ─── State ────────────────────────────────────
     let demoMode = false;
     const API_BASE = window.location.origin;
     let medications = [];
     let activities = [];
     let alerts = [];
     let careTeam = [];
+    let lastRiskData = null;
+
+    // ─── BoraFramework Entropy (ported from Neural Entropy architecture) ──
+    function computeShannonEntropy(data) {
+      const total = data.reduce((a, b) => a + b, 0);
+      if (total === 0) return 0;
+      const probs = data.map(v => v / total);
+      return -probs.reduce((sum, p) => p > 0 ? sum + p * Math.log2(p) : sum, 0);
+    }
+    function computeSampleEntropy(data, m, r) {
+      m = m || 2; r = r || 0.2;
+      const N = data.length;
+      const std = Math.sqrt(data.reduce((s, x) => s + x * x, 0) / N - Math.pow(data.reduce((a, b) => a + b, 0) / N, 2));
+      const tol = r * std;
+      function countMatches(tpl, len) {
+        let c = 0;
+        for (let i = 0; i < N - len; i++) {
+          let match = true;
+          for (let j = 0; j < len; j++) { if (Math.abs(data[i+j] - tpl[j]) > tol) { match = false; break; } }
+          if (match) c++;
+        }
+        return c;
+      }
+      let A = 0, B = 0;
+      for (let i = 0; i < N - m; i++) {
+        const tpl = data.slice(i, i + m);
+        B += countMatches(tpl, m);
+        A += countMatches([...tpl, data[i + m]], m + 1);
+      }
+      if (B === 0 || A === 0) return 0;
+      return -Math.log(A / B);
+    }
+    function computeVicsekOrder(velocities) {
+      if (!velocities.length) return 0;
+      let svx = 0, svy = 0, ss = 0;
+      for (const v of velocities) { svx += v.vx; svy += v.vy; ss += Math.sqrt(v.vx**2 + v.vy**2); }
+      if (ss === 0) return 0;
+      return (Math.sqrt(svx**2 + svy**2) / velocities.length) / (ss / velocities.length);
+    }
+    function applyL1CoherenceFilter(data, threshold) {
+      threshold = threshold || 0.3;
+      const ent = computeShannonEntropy(data);
+      const maxE = Math.log2(data.length);
+      const norm = maxE > 0 ? ent / maxE : 0;
+      return { passed: norm < threshold, score: norm, details: 'L1 Coherence: ' + (norm*100).toFixed(2) + '%' };
+    }
+    function applyL2StabilityFilter(data, ws) {
+      ws = ws || 10;
+      const windows = [];
+      for (let i = 0; i <= data.length - ws; i++) windows.push(computeShannonEntropy(data.slice(i, i + ws)));
+      if (!windows.length) return { passed: true, score: 1, details: 'L2 Stability: N/A' };
+      const mean = windows.reduce((a, b) => a + b, 0) / windows.length;
+      const variance = windows.reduce((s, x) => s + (x - mean)**2, 0) / windows.length;
+      const stability = 1 / (1 + variance);
+      return { passed: stability > 0.5, score: stability, details: 'L2 Stability: ' + (stability*100).toFixed(2) + '%' };
+    }
+    function computeAbsurdityScore(entropy, vicsekOrder, l1, l2) {
+      const ec = Math.min(entropy / 10, 1) * 0.3;
+      const oc = (1 - vicsekOrder) * 0.3;
+      const fc = (l1.passed ? 0 : 0.2) + (l2.passed ? 0 : 0.2);
+      return Math.min(ec + oc + fc, 1);
+    }
+    function detectRegime(entropy, vicsekOrder) {
+      if (entropy < 0.3 && vicsekOrder > 0.7) return 'neural';
+      if (entropy > 0.7 || vicsekOrder < 0.3) return 'quantum';
+      return 'hybrid';
+    }
+
+    // ─── Global Patient Context (shared across ALL pages) ──
+    function getFullPatientContext() {
+      const fn = (document.getElementById('pFirstName').value || '').trim();
+      const ln = (document.getElementById('pLastName').value || '').trim();
+      const name = (fn + ' ' + ln).trim() || 'Patient';
+      const dob = document.getElementById('pDOB').value || '';
+      const mrn = document.getElementById('pMRN').value || '';
+      const provider = document.getElementById('pProvider').value || '';
+      const diagnosis = document.getElementById('pDiagnosis').value || '';
+      const conditions = document.getElementById('pConditions').value || '';
+      const bloodType = document.getElementById('pBloodType').value || '';
+
+      const medList = medications.map(m => m.name + (m.dose ? ' ' + m.dose : '') + (m.time ? ' (' + m.time + ')' : '')).join('; ') || 'None entered';
+      const alertList = alerts.map(a => a.text).join('; ') || 'None';
+      const teamList = careTeam.map(m => m.name + (m.role ? ' (' + m.role + ')' : '')).join('; ') || 'None';
+
+      let riskInfo = 'Not yet calculated';
+      if (lastRiskData) {
+        riskInfo = 'Score: ' + lastRiskData.score.toFixed(2) + ', Level: ' + lastRiskData.level;
+        if (lastRiskData.entropyDetails) riskInfo += ', ' + lastRiskData.entropyDetails;
+      }
+
+      return {
+        name, dob, mrn, provider, diagnosis, conditions, bloodType,
+        medications: medList, alerts: alertList, careTeam: teamList, riskScore: riskInfo,
+        toSystemPrompt: function() {
+          return 'You are NeuroSync Care, a clinical decision support assistant specializing in neurological conditions, particularly Parkinson\'s disease. Provide evidence-based, concise responses. Always remind that this is informational support, not medical advice.\n\n'
+            + 'CURRENT PATIENT CONTEXT (entered by clinician):\n'
+            + '- Name: ' + this.name + '\n'
+            + (this.dob ? '- DOB: ' + this.dob + '\n' : '')
+            + (this.mrn ? '- MRN: ' + this.mrn + '\n' : '')
+            + (this.provider ? '- Provider: ' + this.provider + '\n' : '')
+            + (this.diagnosis ? '- Primary Diagnosis: ' + this.diagnosis + '\n' : '')
+            + (this.conditions ? '- Other Conditions: ' + this.conditions + '\n' : '')
+            + (this.bloodType ? '- Blood Type: ' + this.bloodType + '\n' : '')
+            + '- Medications: ' + this.medications + '\n'
+            + '- Current Risk: ' + this.riskScore + '\n'
+            + '- Active Alerts: ' + this.alerts + '\n'
+            + '- Care Team: ' + this.careTeam + '\n'
+            + '\nUse this patient context to personalize all responses. Reference specific medications, conditions, and risk levels when relevant.';
+        }
+      };
+    };
 
     // ─── Navigation ───────────────────────────────────
     function showPage(pageId, el) {
@@ -741,6 +852,19 @@
         mobility: document.getElementById('mobilitySlider').value / 100,
       };
 
+      // Client-side BoraFramework entropy computation
+      const signalData = [symptoms.tremor, symptoms.freezing, symptoms.sleep, symptoms.mood, symptoms.mobility];
+      const paddedSignal = [];
+      for (let i = 0; i < 50; i++) paddedSignal.push(signalData[i % 5] + (Math.random() - 0.5) * 0.05);
+      const shannonE = computeShannonEntropy(signalData.map(v => Math.round(v * 100)));
+      const sampleE = computeSampleEntropy(paddedSignal);
+      const velocities = signalData.map((v, i) => ({ vx: v * Math.cos(i), vy: v * Math.sin(i) }));
+      const vicsekO = computeVicsekOrder(velocities);
+      const l1 = applyL1CoherenceFilter(signalData.map(v => Math.round(v * 100)));
+      const l2 = applyL2StabilityFilter(paddedSignal);
+      const absurdity = computeAbsurdityScore(shannonE, vicsekO, l1, l2);
+      const regime = detectRegime(shannonE, vicsekO);
+
       try {
         const res = await fetch(API_BASE + '/api/risk', {
           method: 'POST',
@@ -748,6 +872,8 @@
           body: JSON.stringify({ symptoms })
         });
         const data = await res.json();
+        data.entropyDetails = 'Shannon=' + shannonE.toFixed(3) + ' Sample=' + sampleE.toFixed(3) + ' Vicsek=' + vicsekO.toFixed(3) + ' Absurdity=' + absurdity.toFixed(3) + ' Regime=' + regime + ' L1=' + (l1.passed ? 'PASS' : 'FAIL') + ' L2=' + (l2.passed ? 'PASS' : 'FAIL');
+        lastRiskData = data;
 
         // Update gauge
         const colors = { low: 'var(--success)', moderate: 'var(--warning)', elevated: 'var(--error)', high: 'var(--error)' };
@@ -766,11 +892,23 @@
         document.getElementById('dashRiskScore').textContent = data.score.toFixed(2);
         document.getElementById('dashRiskScore').style.color = color.includes('var') ? '' : color;
 
-        // Update factors
+        // Update factors with BoraFramework entropy details
         if (data.factors && data.factors.length) {
-          document.getElementById('riskFactors').innerHTML = data.factors.map(f =>
+          let factorsHtml = data.factors.map(f =>
             '<div style="margin-bottom:12px;font-size:14px;padding:8px 0;border-bottom:1px solid rgba(45,90,74,0.3);">' + f + '</div>'
           ).join('');
+          factorsHtml += '<div style="margin-top:16px;padding:16px;background:rgba(10,31,26,0.6);border-radius:8px;border:1px solid var(--border);">';
+          factorsHtml += '<div style="font-size:12px;color:var(--primary);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600;">BoraFramework Entropy Analysis</div>';
+          factorsHtml += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:13px;">';
+          factorsHtml += '<div>Shannon Entropy: <strong>' + shannonE.toFixed(3) + '</strong></div>';
+          factorsHtml += '<div>Sample Entropy: <strong>' + sampleE.toFixed(3) + '</strong></div>';
+          factorsHtml += '<div>Vicsek Order: <strong>' + vicsekO.toFixed(3) + '</strong></div>';
+          factorsHtml += '<div>Absurdity Score: <strong>' + absurdity.toFixed(3) + '</strong></div>';
+          factorsHtml += '<div>L1 Coherence: <strong style="color:' + (l1.passed ? 'var(--success)' : 'var(--error)') + ';">' + (l1.passed ? 'PASS' : 'FAIL') + '</strong> (' + (l1.score*100).toFixed(1) + '%)</div>';
+          factorsHtml += '<div>L2 Stability: <strong style="color:' + (l2.passed ? 'var(--success)' : 'var(--error)') + ';">' + (l2.passed ? 'PASS' : 'FAIL') + '</strong> (' + (l2.score*100).toFixed(1) + '%)</div>';
+          factorsHtml += '<div style="grid-column:span 2;">Regime: <strong style="color:var(--primary);">' + regime.toUpperCase() + '</strong></div>';
+          factorsHtml += '</div></div>';
+          document.getElementById('riskFactors').innerHTML = factorsHtml;
         }
 
         // Update trend
@@ -872,11 +1010,13 @@
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Generating...';
 
+      const ctx = getFullPatientContext();
+      const enrichedNotes = 'PATIENT: ' + ctx.name + '\nDOB: ' + (ctx.dob || 'N/A') + '\nMRN: ' + (ctx.mrn || 'N/A') + '\nDIAGNOSIS: ' + (ctx.diagnosis || 'N/A') + '\nCONDITIONS: ' + (ctx.conditions || 'N/A') + '\nMEDICATIONS: ' + ctx.medications + '\nRISK: ' + ctx.riskScore + '\n\nCLINICAL NOTES:\n' + notes;
       try {
         const res = await fetch(API_BASE + '/api/summarize', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ notes, format, demoMode })
+          body: JSON.stringify({ notes: enrichedNotes, format, demoMode })
         });
         const data = await res.json();
 
@@ -911,13 +1051,14 @@
       sendBtn.disabled = true;
       sendBtn.innerHTML = '<span class="spinner"></span>';
 
+      const ctx = getFullPatientContext();
       try {
         const res = await fetch(API_BASE + '/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             messages: [
-              { role: 'system', content: 'You are NeuroSync Care, a clinical decision support assistant specializing in neurological conditions, particularly Parkinson\'s disease. Provide evidence-based, concise responses. Always remind that this is informational support, not medical advice.' },
+              { role: 'system', content: ctx.toSystemPrompt() },
               ...chatHistory
             ],
             demoMode
