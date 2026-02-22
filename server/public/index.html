@@ -680,11 +680,13 @@
       document.getElementById('icdSearch').value = '';
       document.getElementById('icdDropdown').style.display = 'none';
       renderICDTags();
+      saveICDToStorage();
     }
 
     function removeICDCode(code) {
       assignedICDCodes = assignedICDCodes.filter(function(c) { return c.code !== code; });
       renderICDTags();
+      saveICDToStorage();
     }
 
     function renderICDTags() {
@@ -694,9 +696,19 @@
         return;
       }
       container.innerHTML = assignedICDCodes.map(function(c) {
-        return '<span class="tag tag-info" style="cursor:pointer; font-size:12px; padding:5px 10px;" onclick="removeICDCode(\'' + c.code + '\')" title="Click to remove">' +
-          c.code + ' &times;</span>';
+        return '<span class="tag tag-info" style="cursor:pointer; font-size:12px; padding:5px 12px; margin:2px;" onclick="removeICDCode(\'' + c.code + '\')" title="Click to remove">' +
+          '<strong>' + c.code + '</strong> ' + c.name + ' &times;</span>';
       }).join('');
+    }
+
+    function saveICDToStorage() {
+      try { localStorage.setItem('neurosync_icd_codes', JSON.stringify(assignedICDCodes)); } catch(e) {}
+    }
+    function loadICDFromStorage() {
+      try {
+        var saved = localStorage.getItem('neurosync_icd_codes');
+        if (saved) { assignedICDCodes = JSON.parse(saved); renderICDTags(); }
+      } catch(e) {}
     }
 
     function getICDCodesString() {
@@ -797,7 +809,7 @@
         icdCodes: getICDCodesString(),
         medications: medList, alerts: alertList, careTeam: teamList, riskScore: riskInfo,
         toSystemPrompt: function() {
-          return 'You are NeuroSync Care, a clinical decision support assistant specializing in neurological conditions including Parkinson\'s disease, Multiple Sclerosis, Epilepsy, ALS, Alzheimer\'s, Traumatic Brain Injury, Stroke recovery, Huntington\'s, Dystonia, Essential Tremor, Myasthenia Gravis, and other neurological disorders. Provide evidence-based, condition-specific responses. Always remind that this is informational support, not medical advice.\n\n'
+          return 'You are NeuroSync Care, a clinical decision support assistant specializing in neurological conditions including Parkinson\'s disease, Multiple Sclerosis, Epilepsy, ALS, Alzheimer\'s, Traumatic Brain Injury, Stroke recovery, Huntington\'s, Dystonia, Essential Tremor, Myasthenia Gravis, and other neurological disorders. Provide evidence-based, condition-specific responses. IMPORTANT: You MUST end every response with the following disclaimer on its own line: "This does not replace a licensed provider. Please consult your healthcare team for medical decisions." If the patient has ICD-10 codes assigned, reference them in your response when clinically relevant.\n\n'
             + 'CURRENT PATIENT CONTEXT (entered by clinician):\n'
             + '- Name: ' + this.name + '\n'
             + (this.dob ? '- DOB: ' + this.dob + '\n' : '')
@@ -811,7 +823,7 @@
             + '- Current Risk: ' + this.riskScore + '\n'
             + '- Active Alerts: ' + this.alerts + '\n'
             + '- Care Team: ' + this.careTeam + '\n'
-            + '\nUse this patient context to personalize all responses. Reference specific medications, conditions, and risk levels when relevant.';
+            + '\nUse this patient context to personalize all responses. Reference specific medications, conditions, ICD-10 codes, and risk levels when relevant. Always end with the provider disclaimer.';
         }
       };
     };
@@ -1223,6 +1235,9 @@
     }
 
     // ─── Init ─────────────────────────────────────────
+    // Load persisted ICD codes from localStorage
+    loadICDFromStorage();
+
     fetch(API_BASE + '/api/health')
       .then(r => r.json())
       .then(d => {
