@@ -280,6 +280,10 @@
     <div class="nav-tab" onclick="showPage('summary', this)">Visit Summary</div>
     <div class="nav-tab" onclick="showPage('chat', this)">Assistant</div>
     <div class="nav-tab" onclick="showPage('emergency', this)">Emergency Card</div>
+    <div class="nav-tab" onclick="showPage('billing', this)">Billing / CPT</div>
+    <div class="nav-tab" onclick="showPage('insurance', this)">Insurance</div>
+    <div class="nav-tab" onclick="showPage('caregiver-services', this)">Caregiver Services</div>
+    <div class="nav-tab" onclick="showPage('provider-services', this)">Provider Services</div>
   </div>
 
   <div class="main">
@@ -635,6 +639,350 @@
       <div id="emergencyCardOutput"></div>
     </div>
 
+    <!-- ═══ BILLING / CPT PAGE ═══ -->
+    <div class="page" id="page-billing">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">CPT / HCPCS Code Lookup</div>
+          <div class="card-subtitle">Source: NLM / CMS HCPCS Level II</div>
+          <div style="margin-top: 16px; position: relative;">
+            <input class="form-input" id="cptSearch" placeholder="Search by procedure name or code (e.g. home health, therapy, evaluation)" autocomplete="off" oninput="searchCPT(this.value)">
+            <div id="cptDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; z-index:50; background:var(--bg-card); border:1px solid var(--border); border-radius:0 0 10px 10px; max-height:200px; overflow-y:auto;"></div>
+          </div>
+          <div style="margin-top: 16px;">
+            <label class="form-label">Assigned CPT / HCPCS Codes</label>
+            <div id="cptTags" style="display:flex; flex-wrap:wrap; gap:8px; min-height:42px; padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg-light); align-items:center;">
+              <span style="color:var(--text-muted); font-size:13px;" id="cptPlaceholder">No codes assigned</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Billing Summary</div>
+          <div class="card-subtitle">Estimated costs based on assigned codes</div>
+          <div style="margin-top: 16px;">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Visit Type</label>
+                <select class="form-input" id="visitType">
+                  <option value="">Select visit type</option>
+                  <option value="initial">Initial Evaluation</option>
+                  <option value="followup">Follow-Up Visit</option>
+                  <option value="home-health">Home Health Visit</option>
+                  <option value="telehealth">Telehealth Consultation</option>
+                  <option value="therapy">Therapy Session</option>
+                  <option value="emergency">Emergency / Urgent</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Service Duration (minutes)</label>
+                <input class="form-input" id="serviceDuration" type="number" placeholder="e.g. 30">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Billing Notes</label>
+              <textarea class="textarea" id="billingNotes" style="min-height:80px;" placeholder="Additional billing notes, modifiers, or special circumstances..."></textarea>
+            </div>
+            <div id="billingEstimate" style="margin-top:12px; padding:16px; background:var(--bg-light); border-radius:10px; border:1px solid var(--border);">
+              <div style="font-size:12px; color:var(--text-secondary); text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Estimated Cost Summary</div>
+              <div style="color:var(--text-muted); font-size:14px;">Assign CPT codes and select visit type to see estimates</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:20px;">
+        <div class="card-title">Prior Authorization Tracker</div>
+        <div class="card-subtitle">Track authorization status for procedures and services</div>
+        <div id="priorAuthList" style="margin-top:16px;">
+          <div class="empty-state">
+            <div class="empty-state-icon">📋</div>
+            <div class="empty-state-text">No prior authorizations tracked</div>
+          </div>
+        </div>
+        <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+          <div class="form-row-3">
+            <div><input class="form-input" id="authProcedure" placeholder="Procedure / service"></div>
+            <div><input class="form-input" id="authInsurer" placeholder="Insurance carrier"></div>
+            <div>
+              <select class="form-input" id="authStatus">
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="denied">Denied</option>
+                <option value="in-review">In Review</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="addPriorAuth()" style="margin-top:8px;">+ Add Authorization</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ INSURANCE PAGE ═══ -->
+    <div class="page" id="page-insurance">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Primary Insurance</div>
+          <div style="margin-top: 16px;">
+            <div class="form-group">
+              <label class="form-label">Insurance Carrier</label>
+              <input class="form-input" id="insCarrier" placeholder="e.g. Blue Cross Blue Shield, Aetna, UnitedHealthcare">
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Policy Number</label>
+                <input class="form-input" id="insPolicyNum" placeholder="Policy / member ID">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Group Number</label>
+                <input class="form-input" id="insGroupNum" placeholder="Group number">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Plan Type</label>
+                <select class="form-input" id="insPlanType">
+                  <option value="">Select plan type</option>
+                  <option value="hmo">HMO</option>
+                  <option value="ppo">PPO</option>
+                  <option value="epo">EPO</option>
+                  <option value="pos">POS</option>
+                  <option value="medicare">Medicare</option>
+                  <option value="medicaid">Medicaid</option>
+                  <option value="tricare">TRICARE</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Effective Date</label>
+                <input class="form-input" id="insEffDate" type="date">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subscriber Name (if different from patient)</label>
+              <input class="form-input" id="insSubscriber" placeholder="Subscriber name">
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="saveInsurance()" style="margin-top:8px;">Save Insurance Info</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-title">Coverage Details</div>
+            <div style="margin-top: 16px;">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Copay</label>
+                  <input class="form-input" id="insCopay" placeholder="e.g. $25">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Deductible</label>
+                  <input class="form-input" id="insDeductible" placeholder="e.g. $1,500">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Deductible Met</label>
+                  <input class="form-input" id="insDeductibleMet" placeholder="e.g. $750 of $1,500">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Out-of-Pocket Max</label>
+                  <input class="form-input" id="insOOPMax" placeholder="e.g. $6,000">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Coverage Notes</label>
+                <textarea class="textarea" id="insCoverageNotes" style="min-height:60px;" placeholder="Special coverage notes, limitations, or exclusions..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Referral Tracking</div>
+            <div id="referralList" style="margin-top:16px;">
+              <div class="empty-state">
+                <div class="empty-state-icon">📄</div>
+                <div class="empty-state-text">No referrals tracked</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+              <div class="form-row-3">
+                <div><input class="form-input" id="refSpecialty" placeholder="Specialty"></div>
+                <div><input class="form-input" id="refProvider" placeholder="Referred to"></div>
+                <div><input class="form-input" id="refAuthNum" placeholder="Auth number"></div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addReferral()" style="margin-top:8px;">+ Add Referral</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CAREGIVER SERVICES PAGE ═══ -->
+    <div class="page" id="page-caregiver-services">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Care Plan Tasks</div>
+              <div class="card-subtitle">Daily and recurring care tasks for the patient</div>
+            </div>
+          </div>
+          <div id="carePlanList" style="margin-top:8px;">
+            <div class="empty-state">
+              <div class="empty-state-icon">📝</div>
+              <div class="empty-state-text">No care plan tasks added</div>
+            </div>
+          </div>
+          <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+            <div class="form-row-3">
+              <div><input class="form-input" id="cpTask" placeholder="Task description"></div>
+              <div>
+                <select class="form-input" id="cpFrequency">
+                  <option value="daily">Daily</option>
+                  <option value="twice-daily">Twice Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="as-needed">As Needed</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              <div><input class="form-input" id="cpAssignee" placeholder="Assigned to"></div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="addCarePlanTask()" style="margin-top:8px;">+ Add Task</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-title">Caregiver Schedule</div>
+            <div class="card-subtitle">Upcoming visits and appointments</div>
+            <div id="careScheduleList" style="margin-top:16px;">
+              <div class="empty-state">
+                <div class="empty-state-icon">📅</div>
+                <div class="empty-state-text">No scheduled visits</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+              <div class="form-row-3">
+                <div><input class="form-input" id="csDate" type="date"></div>
+                <div><input class="form-input" id="csTime" type="time"></div>
+                <div><input class="form-input" id="csType" placeholder="Visit type"></div>
+              </div>
+              <div class="form-group" style="margin-top:8px;">
+                <input class="form-input" id="csCaregiver" placeholder="Caregiver name">
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addCareSchedule()" style="margin-top:8px;">+ Schedule Visit</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Caregiver Contacts</div>
+            <div id="careContactList" style="margin-top:16px;">
+              <div class="empty-state">
+                <div class="empty-state-icon">📞</div>
+                <div class="empty-state-text">No caregiver contacts added</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+              <div class="form-row-3">
+                <div><input class="form-input" id="ccName" placeholder="Name"></div>
+                <div><input class="form-input" id="ccRole" placeholder="Role / relation"></div>
+                <div><input class="form-input" id="ccPhone" placeholder="Phone"></div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addCareContact()" style="margin-top:8px;">+ Add Contact</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PROVIDER SERVICES PAGE ═══ -->
+    <div class="page" id="page-provider-services">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Clinical Orders</div>
+              <div class="card-subtitle">Lab work, imaging, and procedure orders</div>
+            </div>
+          </div>
+          <div id="ordersList" style="margin-top:8px;">
+            <div class="empty-state">
+              <div class="empty-state-icon">🔬</div>
+              <div class="empty-state-text">No orders placed</div>
+            </div>
+          </div>
+          <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+            <div class="form-row-3">
+              <div><input class="form-input" id="orderDesc" placeholder="Order description"></div>
+              <div>
+                <select class="form-input" id="orderType">
+                  <option value="lab">Lab Work</option>
+                  <option value="imaging">Imaging</option>
+                  <option value="procedure">Procedure</option>
+                  <option value="referral">Referral</option>
+                  <option value="rx">Prescription</option>
+                </select>
+              </div>
+              <div>
+                <select class="form-input" id="orderPriority">
+                  <option value="routine">Routine</option>
+                  <option value="urgent">Urgent</option>
+                  <option value="stat">STAT</option>
+                </select>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="addOrder()" style="margin-top:8px;">+ Place Order</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="card">
+            <div class="card-title">Provider Notes</div>
+            <div class="card-subtitle">Clinical documentation and progress notes</div>
+            <div style="margin-top:16px;">
+              <div class="form-group">
+                <label class="form-label">Note Type</label>
+                <select class="form-input" id="noteType">
+                  <option value="progress">Progress Note</option>
+                  <option value="hpi">History of Present Illness</option>
+                  <option value="assessment">Assessment and Plan</option>
+                  <option value="discharge">Discharge Summary</option>
+                  <option value="consult">Consultation Note</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <textarea class="textarea" id="providerNote" placeholder="Enter clinical note..."></textarea>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="saveProviderNote()">Save Note</button>
+            </div>
+            <div id="providerNotesList" style="margin-top:16px;"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-title">Treatment Plan</div>
+            <div class="card-subtitle">Goals, interventions, and expected outcomes</div>
+            <div id="treatmentPlanList" style="margin-top:16px;">
+              <div class="empty-state">
+                <div class="empty-state-icon">🎯</div>
+                <div class="empty-state-text">No treatment goals set</div>
+              </div>
+            </div>
+            <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
+              <div class="form-group">
+                <input class="form-input" id="txGoal" placeholder="Treatment goal">
+              </div>
+              <div class="form-row">
+                <div><input class="form-input" id="txIntervention" placeholder="Intervention"></div>
+                <div><input class="form-input" id="txTimeline" placeholder="Timeline (e.g. 4 weeks)"></div>
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="addTreatmentGoal()" style="margin-top:8px;">+ Add Goal</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -648,6 +996,16 @@
     let lastRiskData = null;
     let assignedICDCodes = [];
     let icdSearchTimeout = null;
+    let assignedCPTCodes = [];
+    let cptSearchTimeout = null;
+    let priorAuths = [];
+    let referrals = [];
+    let carePlanTasks = [];
+    let careSchedules = [];
+    let careContacts = [];
+    let clinicalOrders = [];
+    let providerNotes = [];
+    let treatmentGoals = [];
 
     // ─── ICD-10 Code Lookup (NLM Clinical Tables API, CMS ICD-10-CM) ──
     function searchICD(query) {
@@ -714,6 +1072,236 @@
     function getICDCodesString() {
       if (!assignedICDCodes.length) return 'None assigned';
       return assignedICDCodes.map(function(c) { return c.code + ' (' + c.name + ')'; }).join('; ');
+    }
+
+    // ─── CPT / HCPCS Code Lookup (NLM Clinical Tables API, CMS HCPCS) ──
+    function searchCPT(query) {
+      clearTimeout(cptSearchTimeout);
+      const dropdown = document.getElementById('cptDropdown');
+      if (!query || query.length < 2) { dropdown.style.display = 'none'; return; }
+      cptSearchTimeout = setTimeout(function() {
+        fetch('https://clinicaltables.nlm.nih.gov/api/hcpcs/v3/search?terms=' + encodeURIComponent(query) + '&maxList=8')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            var results = data[3] || [];
+            if (!results.length) { dropdown.style.display = 'none'; return; }
+            dropdown.innerHTML = results.map(function(item) {
+              return '<div style="padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--border); font-size:13px; display:flex; justify-content:space-between; align-items:center;" ' +
+                'onmouseover="this.style.background=\'var(--bg-light)\'" onmouseout="this.style.background=\'transparent\'" ' +
+                'onclick="addCPTCode(\'' + item[0] + '\', \'' + item[1].replace(/'/g, "\\'") + '\')">' +
+                '<span style="color:var(--success); font-weight:600; margin-right:12px;">' + item[0] + '</span>' +
+                '<span style="color:var(--text-secondary); flex:1; text-align:left;">' + item[1] + '</span>' +
+                '</div>';
+            }).join('');
+            dropdown.style.display = 'block';
+          })
+          .catch(function() { dropdown.style.display = 'none'; });
+      }, 300);
+    }
+
+    function addCPTCode(code, name) {
+      if (assignedCPTCodes.find(function(c) { return c.code === code; })) return;
+      assignedCPTCodes.push({ code: code, name: name });
+      document.getElementById('cptSearch').value = '';
+      document.getElementById('cptDropdown').style.display = 'none';
+      renderCPTTags();
+      try { localStorage.setItem('neurosync_cpt_codes', JSON.stringify(assignedCPTCodes)); } catch(e) {}
+    }
+
+    function removeCPTCode(code) {
+      assignedCPTCodes = assignedCPTCodes.filter(function(c) { return c.code !== code; });
+      renderCPTTags();
+      try { localStorage.setItem('neurosync_cpt_codes', JSON.stringify(assignedCPTCodes)); } catch(e) {}
+    }
+
+    function renderCPTTags() {
+      var container = document.getElementById('cptTags');
+      if (!assignedCPTCodes.length) {
+        container.innerHTML = '<span style="color:var(--text-muted); font-size:13px;">No codes assigned</span>';
+        return;
+      }
+      container.innerHTML = assignedCPTCodes.map(function(c) {
+        return '<span class="tag tag-primary" style="cursor:pointer; font-size:12px; padding:5px 12px; margin:2px;" onclick="removeCPTCode(\'' + c.code + '\')" title="Click to remove">' +
+          '<strong>' + c.code + '</strong> ' + c.name + ' &times;</span>';
+      }).join('');
+    }
+
+    // ─── Prior Authorization ──
+    function addPriorAuth() {
+      var proc = document.getElementById('authProcedure').value.trim();
+      var ins = document.getElementById('authInsurer').value.trim();
+      var status = document.getElementById('authStatus').value;
+      if (!proc) return;
+      priorAuths.push({ procedure: proc, insurer: ins, status: status, date: new Date().toLocaleDateString() });
+      document.getElementById('authProcedure').value = '';
+      document.getElementById('authInsurer').value = '';
+      renderPriorAuths();
+    }
+
+    function renderPriorAuths() {
+      var el = document.getElementById('priorAuthList');
+      if (!priorAuths.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">\ud83d\udccb</div><div class="empty-state-text">No prior authorizations tracked</div></div>'; return; }
+      var statusColors = { pending: 'var(--warning)', approved: 'var(--success)', denied: 'var(--error)', 'in-review': 'var(--info)' };
+      el.innerHTML = priorAuths.map(function(a, i) {
+        return '<div class="med-item"><div><div class="med-name">' + a.procedure + '</div><div class="med-dose">' + (a.insurer || 'No carrier') + ' | ' + a.date + '</div></div><div style="display:flex;align-items:center;gap:8px;"><span style="padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.08);color:' + (statusColors[a.status] || 'var(--text)') + ';">' + a.status.toUpperCase() + '</span><span style="cursor:pointer;color:var(--error);font-size:16px;" onclick="priorAuths.splice(' + i + ',1);renderPriorAuths();">\u2715</span></div></div>';
+      }).join('');
+    }
+
+    // ─── Insurance ──
+    function saveInsurance() {
+      addActivity('Insurance information saved for ' + getPatientName());
+    }
+
+    // ─── Referrals ──
+    function addReferral() {
+      var spec = document.getElementById('refSpecialty').value.trim();
+      var prov = document.getElementById('refProvider').value.trim();
+      var auth = document.getElementById('refAuthNum').value.trim();
+      if (!spec) return;
+      referrals.push({ specialty: spec, provider: prov, authNum: auth, date: new Date().toLocaleDateString() });
+      document.getElementById('refSpecialty').value = '';
+      document.getElementById('refProvider').value = '';
+      document.getElementById('refAuthNum').value = '';
+      renderReferrals();
+    }
+
+    function renderReferrals() {
+      var el = document.getElementById('referralList');
+      if (!referrals.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">\ud83d\udcc4</div><div class="empty-state-text">No referrals tracked</div></div>'; return; }
+      el.innerHTML = referrals.map(function(r, i) {
+        return '<div class="med-item"><div><div class="med-name">' + r.specialty + '</div><div class="med-dose">' + (r.provider || '') + (r.authNum ? ' | Auth: ' + r.authNum : '') + '</div></div><div style="display:flex;align-items:center;gap:8px;"><div class="med-time">' + r.date + '</div><span style="cursor:pointer;color:var(--error);font-size:16px;" onclick="referrals.splice(' + i + ',1);renderReferrals();">\u2715</span></div></div>';
+      }).join('');
+    }
+
+    // ─── Care Plan Tasks ──
+    function addCarePlanTask() {
+      var task = document.getElementById('cpTask').value.trim();
+      var freq = document.getElementById('cpFrequency').value;
+      var assignee = document.getElementById('cpAssignee').value.trim();
+      if (!task) return;
+      carePlanTasks.push({ task: task, frequency: freq, assignee: assignee, completed: false });
+      document.getElementById('cpTask').value = '';
+      document.getElementById('cpAssignee').value = '';
+      renderCarePlanTasks();
+    }
+
+    function toggleCarePlanTask(i) {
+      carePlanTasks[i].completed = !carePlanTasks[i].completed;
+      renderCarePlanTasks();
+    }
+
+    function renderCarePlanTasks() {
+      var el = document.getElementById('carePlanList');
+      if (!carePlanTasks.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">\ud83d\udcdd</div><div class="empty-state-text">No care plan tasks added</div></div>'; return; }
+      el.innerHTML = carePlanTasks.map(function(t, i) {
+        var style = t.completed ? 'text-decoration:line-through; opacity:0.5;' : '';
+        return '<div class="med-item" style="' + style + '"><div style="display:flex;align-items:center;gap:10px;"><input type="checkbox" ' + (t.completed ? 'checked' : '') + ' onchange="toggleCarePlanTask(' + i + ')" style="accent-color:var(--primary);width:18px;height:18px;"><div><div class="med-name">' + t.task + '</div><div class="med-dose">' + t.frequency + (t.assignee ? ' | ' + t.assignee : '') + '</div></div></div><span style="cursor:pointer;color:var(--error);font-size:16px;" onclick="carePlanTasks.splice(' + i + ',1);renderCarePlanTasks();">\u2715</span></div>';
+      }).join('');
+    }
+
+    // ─── Caregiver Schedule ──
+    function addCareSchedule() {
+      var date = document.getElementById('csDate').value;
+      var time = document.getElementById('csTime').value;
+      var type = document.getElementById('csType').value.trim();
+      var caregiver = document.getElementById('csCaregiver').value.trim();
+      if (!date || !type) return;
+      careSchedules.push({ date: date, time: time, type: type, caregiver: caregiver });
+      document.getElementById('csDate').value = '';
+      document.getElementById('csTime').value = '';
+      document.getElementById('csType').value = '';
+      document.getElementById('csCaregiver').value = '';
+      renderCareSchedules();
+    }
+
+    function renderCareSchedules() {
+      var el = document.getElementById('careScheduleList');
+      if (!careSchedules.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">\ud83d\udcc5</div><div class="empty-state-text">No scheduled visits</div></div>'; return; }
+      el.innerHTML = careSchedules.map(function(s, i) {
+        return '<div class="med-item"><div><div class="med-name">' + s.type + '</div><div class="med-dose">' + s.date + (s.time ? ' at ' + s.time : '') + (s.caregiver ? ' | ' + s.caregiver : '') + '</div></div><span style="cursor:pointer;color:var(--error);font-size:16px;" onclick="careSchedules.splice(' + i + ',1);renderCareSchedules();">\u2715</span></div>';
+      }).join('');
+    }
+
+    // ─── Caregiver Contacts ──
+    function addCareContact() {
+      var name = document.getElementById('ccName').value.trim();
+      var role = document.getElementById('ccRole').value.trim();
+      var phone = document.getElementById('ccPhone').value.trim();
+      if (!name) return;
+      careContacts.push({ name: name, role: role, phone: phone });
+      document.getElementById('ccName').value = '';
+      document.getElementById('ccRole').value = '';
+      document.getElementById('ccPhone').value = '';
+      renderCareContacts();
+    }
+
+    function renderCareContacts() {
+      var el = document.getElementById('careContactList');
+      if (!careContacts.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">\ud83d\udcde</div><div class="empty-state-text">No caregiver contacts added</div></div>'; return; }
+      el.innerHTML = careContacts.map(function(c, i) {
+        return '<div class="med-item"><div><div class="med-name">' + c.name + '</div><div class="med-dose">' + (c.role || '') + '</div></div><div style="display:flex;align-items:center;gap:8px;"><div class="med-time">' + (c.phone || '') + '</div><span style="cursor:pointer;color:var(--error);font-size:16px;" onclick="careContacts.splice(' + i + ',1);renderCareContacts();">\u2715</span></div></div>';
+      }).join('');
+    }
+
+    // ─── Clinical Orders ──
+    function addOrder() {
+      var desc = document.getElementById('orderDesc').value.trim();
+      var type = document.getElementById('orderType').value;
+      var priority = document.getElementById('orderPriority').value;
+      if (!desc) return;
+      clinicalOrders.push({ description: desc, type: type, priority: priority, date: new Date().toLocaleDateString(), status: 'pending' });
+      document.getElementById('orderDesc').value = '';
+      renderOrders();
+      addActivity('Order placed: ' + desc + ' (' + type + ', ' + priority + ')');
+    }
+
+    function renderOrders() {
+      var el = document.getElementById('ordersList');
+      if (!clinicalOrders.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">\ud83d\udd2c</div><div class="empty-state-text">No orders placed</div></div>'; return; }
+      var priorityColors = { routine: 'var(--text-secondary)', urgent: 'var(--warning)', stat: 'var(--error)' };
+      el.innerHTML = clinicalOrders.map(function(o, i) {
+        return '<div class="med-item"><div><div class="med-name">' + o.description + '</div><div class="med-dose">' + o.type + ' | ' + o.date + '</div></div><div style="display:flex;align-items:center;gap:8px;"><span style="padding:4px 10px;border-radius:6px;font-size:12px;font-weight:600;color:' + (priorityColors[o.priority] || 'var(--text)') + ';">' + o.priority.toUpperCase() + '</span><span style="cursor:pointer;color:var(--error);font-size:16px;" onclick="clinicalOrders.splice(' + i + ',1);renderOrders();">\u2715</span></div></div>';
+      }).join('');
+    }
+
+    // ─── Provider Notes ──
+    function saveProviderNote() {
+      var type = document.getElementById('noteType').value;
+      var note = document.getElementById('providerNote').value.trim();
+      if (!note) return;
+      providerNotes.unshift({ type: type, note: note, date: new Date().toLocaleString(), provider: document.getElementById('pProvider').value || 'Provider' });
+      document.getElementById('providerNote').value = '';
+      renderProviderNotes();
+      addActivity('Provider note saved: ' + type);
+    }
+
+    function renderProviderNotes() {
+      var el = document.getElementById('providerNotesList');
+      if (!providerNotes.length) { el.innerHTML = ''; return; }
+      el.innerHTML = providerNotes.map(function(n, i) {
+        return '<div style="padding:14px 0; border-bottom:1px solid rgba(45,90,74,0.5);"><div style="display:flex;justify-content:space-between;align-items:center;"><div><span style="font-size:12px;padding:3px 8px;border-radius:4px;background:rgba(212,165,116,0.15);color:var(--primary);font-weight:600;text-transform:uppercase;">' + n.type + '</span><span style="font-size:12px;color:var(--text-muted);margin-left:8px;">' + n.date + '</span></div><span style="cursor:pointer;color:var(--error);font-size:14px;" onclick="providerNotes.splice(' + i + ',1);renderProviderNotes();">\u2715</span></div><div style="font-size:14px;line-height:1.6;margin-top:8px;color:var(--text-secondary);">' + n.note.replace(/\n/g, '<br>') + '</div></div>';
+      }).join('');
+    }
+
+    // ─── Treatment Goals ──
+    function addTreatmentGoal() {
+      var goal = document.getElementById('txGoal').value.trim();
+      var intervention = document.getElementById('txIntervention').value.trim();
+      var timeline = document.getElementById('txTimeline').value.trim();
+      if (!goal) return;
+      treatmentGoals.push({ goal: goal, intervention: intervention, timeline: timeline, status: 'active' });
+      document.getElementById('txGoal').value = '';
+      document.getElementById('txIntervention').value = '';
+      document.getElementById('txTimeline').value = '';
+      renderTreatmentGoals();
+    }
+
+    function renderTreatmentGoals() {
+      var el = document.getElementById('treatmentPlanList');
+      if (!treatmentGoals.length) { el.innerHTML = '<div class="empty-state"><div class="empty-state-icon">\ud83c\udfaf</div><div class="empty-state-text">No treatment goals set</div></div>'; return; }
+      el.innerHTML = treatmentGoals.map(function(g, i) {
+        return '<div class="med-item"><div><div class="med-name">' + g.goal + '</div><div class="med-dose">' + (g.intervention || '') + (g.timeline ? ' | ' + g.timeline : '') + '</div></div><span style="cursor:pointer;color:var(--error);font-size:16px;" onclick="treatmentGoals.splice(' + i + ',1);renderTreatmentGoals();">\u2715</span></div>';
+      }).join('');
     }
 
     // ─── BoraFramework Entropy (ported from Neural Entropy architecture) ──
@@ -1237,6 +1825,11 @@
     // ─── Init ─────────────────────────────────────────
     // Load persisted ICD codes from localStorage
     loadICDFromStorage();
+    // Load CPT codes from localStorage
+    try {
+      var storedCPT = JSON.parse(localStorage.getItem('neurosync_cpt_codes') || '[]');
+      if (storedCPT.length) { assignedCPTCodes = storedCPT; renderCPTTags(); }
+    } catch(e) {}
 
     fetch(API_BASE + '/api/health')
       .then(r => r.json())
