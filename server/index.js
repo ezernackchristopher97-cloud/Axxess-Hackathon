@@ -1,4 +1,4 @@
-// NeuroSync Care — Backend Server
+// NeuroSync Care Backend Server
 
 require('dotenv').config();
 const express = require('express');
@@ -68,7 +68,7 @@ async function callFeatherless(messages, options = {}) {
     if (response.status === 503) {
       throw new Error('Featherless model is loading. Please try again in a moment (503)');
     }
-    throw new Error(`Featherless API error: ${response.status} — ${errorText}`);
+    throw new Error(`Featherless API error: ${response.status} (${errorText})`);
   }
 
   const data = await response.json();
@@ -120,7 +120,7 @@ app.post('/api/summarize', async (req, res) => {
 
     // Demo mode fallback
     if (req.body.demoMode) {
-      const mockStructured = `## Visit Summary — Structured Note\n\n**Date:** ${new Date().toLocaleDateString()}\n\n### Chief Complaint\nPatient presents for routine follow-up. Reports changes in symptom frequency and intensity over the past week. Sleep quality has been variable.\n\n### Assessment\nNeurological condition management reviewed. Current medication regimen evaluated. Symptom tracking data reviewed from patient logs.\n\n### Plan\n1. Adjust medication timing based on symptom patterns\n2. Continue symptom monitoring and logging\n3. Consider therapy referral based on functional assessment\n4. Follow-up in 4 weeks\n5. Caregiver to monitor for any new or worsening symptoms`;
+      const mockStructured = `## Visit Summary: Structured Note\n\n**Date:** ${new Date().toLocaleDateString()}\n\n### Chief Complaint\nPatient presents for routine follow-up. Reports changes in symptom frequency and intensity over the past week. Sleep quality has been variable.\n\n### Assessment\nNeurological condition management reviewed. Current medication regimen evaluated. Symptom tracking data reviewed from patient logs.\n\n### Plan\n1. Adjust medication timing based on symptom patterns\n2. Continue symptom monitoring and logging\n3. Consider therapy referral based on functional assessment\n4. Follow-up in 4 weeks\n5. Caregiver to monitor for any new or worsening symptoms`;
       const mockPatient = `## Your Visit Summary\n\n**Your appointment on ${new Date().toLocaleDateString()}**\n\n### What we talked about\nWe reviewed how your symptoms have been over the past few weeks and looked at the data you have been tracking.\n\n### What is changing\n- **Your medication schedule** may be adjusted to better manage your symptoms throughout the day.\n- **Therapy** may be recommended to help with specific functional challenges.\n- **Additional monitoring** is being considered based on your recent symptom patterns.\n\n### What you need to do\n1. Follow your updated medication schedule as directed by your provider.\n2. Keep tracking your symptoms in this app.\n3. Have your caregiver watch for any new or unusual symptoms.\n4. Come back in **4 weeks** for a follow-up.`;
       return res.json({ summary: format === 'structured' ? mockStructured : mockPatient, format, model: 'demo-mode', usage: null });
     }

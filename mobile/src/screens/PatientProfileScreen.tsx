@@ -114,7 +114,7 @@ export default function PatientProfileScreen() {
                 <Text style={styles.medDosage}>{med.dosage}</Text>
               </View>
               <Text style={styles.medSchedule}>
-                {med.frequency} — {med.time}
+                {med.frequency}, {med.time}
               </Text>
             </View>
           ))}

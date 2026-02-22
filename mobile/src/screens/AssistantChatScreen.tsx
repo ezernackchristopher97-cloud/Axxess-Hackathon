@@ -136,7 +136,7 @@ export default function AssistantChatScreen() {
     <SafeAreaView style={styles.container} edges={['bottom']}>
       {isDemoMode && (
         <View style={styles.demoBanner}>
-          <Text style={styles.demoBannerText}>DEMO MODE — Mock AI Responses</Text>
+          <Text style={styles.demoBannerText}>DEMO MODE: Mock AI Responses</Text>
         </View>
       )}
 

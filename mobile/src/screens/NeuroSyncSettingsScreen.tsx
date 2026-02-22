@@ -43,8 +43,8 @@ export default function NeuroSyncSettingsScreen() {
               <Text style={styles.settingLabel}>Demo Mode</Text>
               <Text style={styles.settingDescription}>
                 {isDemoMode
-                  ? 'Using mock data — no API key required'
-                  : 'Live mode — requires Featherless API key on server'}
+                  ? 'Using mock data (no API key required)'
+                  : 'Live mode (requires Featherless API key on server)'}
               </Text>
             </View>
             <Switch
@@ -56,7 +56,7 @@ export default function NeuroSyncSettingsScreen() {
           </View>
           <View style={[styles.modeIndicator, { backgroundColor: isDemoMode ? colors.warning + '20' : colors.success + '20' }]}>
             <Text style={[styles.modeText, { color: isDemoMode ? colors.warning : colors.success }]}>
-              {isDemoMode ? '⚡ DEMO MODE — Mock AI responses, no API calls' : '🟢 LIVE MODE — Using Featherless AI backend'}
+              {isDemoMode ? '⚡ DEMO MODE: Mock AI responses, no API calls' : '🟢 LIVE MODE: Using Featherless AI backend'}
             </Text>
           </View>
         </View>
@@ -81,7 +81,7 @@ export default function NeuroSyncSettingsScreen() {
             </Text>
             <Text style={styles.narrativeBody}>
               This app bridges the gap between patient, caregiver, clinician, and first 
-              responder — built from lived experience with the Axxess home health ecosystem.
+              responder, built from lived experience with the Axxess home health ecosystem.
             </Text>
           </View>
         </View>
@@ -145,7 +145,7 @@ export default function NeuroSyncSettingsScreen() {
           <View style={styles.ecosystemCard}>
             <Text style={styles.ecosystemTitle}>Axxess Ecosystem Integration</Text>
             <Text style={styles.ecosystemText}>
-              NeuroSync Care connects with the Axxess ecosystem — 
+              NeuroSync Care connects with the Axxess ecosystem: 
               EMR, Mobile Point of Care, Patient & Family Portal, and 
               Interoperability layers. Visit summary export and emergency card features 
               demonstrate EMR-ready data formatting.
@@ -174,16 +174,16 @@ export default function NeuroSyncSettingsScreen() {
               <Text style={styles.modalBody}>
                 A unified mobile health platform that combines predictive risk scoring, 
                 caregiver coordination, AI-powered clinical documentation, and emergency 
-                preparedness — designed specifically for patients with chronic neurological 
+                preparedness, designed specifically for patients with chronic neurological 
                 conditions.
               </Text>
 
               <Text style={styles.modalSectionTitle}>Architecture</Text>
               <Text style={styles.modalBody}>
                 NeuroSync Care integrates three of my existing systems:{'\n\n'}
-                • REOP AI — Conversational AI assistant with chat, voice, and prompt engineering{'\n'}
-                • Neural Entropy — Entropy-based predictive risk scoring using the BoraFramework{'\n'}
-                • ReUnity — Caregiver coordination, emergency contacts, and medication management{'\n\n'}
+                • REOP AI: Conversational AI assistant with chat, voice, and prompt engineering{'\n'}
+                • Neural Entropy: Entropy-based predictive risk scoring using the BoraFramework{'\n'}
+                • ReUnity: Caregiver coordination, emergency contacts, and medication management{'\n\n'}
                 REOP AI Mobile (Expo 54) serves as the base, with specific modules 
                 from the other two systems integrated.
               </Text>
@@ -192,7 +192,7 @@ export default function NeuroSyncSettingsScreen() {
               <Text style={styles.modalBody}>
                 Powered by Featherless AI using OpenAI-compatible endpoints 
                 (api.featherless.ai/v1/chat/completions). All inference goes through a 
-                lightweight Express proxy server. No API keys are hardcoded — environment 
+                lightweight Express proxy server. No API keys are hardcoded; environment 
                 variables only. Demo Mode provides full mock fallback when no key is configured.
               </Text>
 

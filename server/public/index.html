@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeuroSync Care — Clinician Dashboard</title>
+  <title>NeuroSync Care | Clinician Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -439,7 +439,7 @@
         <div>
           <div class="card" style="text-align: center;">
             <div class="card-title">Entropy-Based Risk Score</div>
-            <div class="card-subtitle">BoraFramework — Shannon + Sample Entropy Analysis</div>
+            <div class="card-subtitle">BoraFramework: Shannon + Sample Entropy Analysis</div>
             <div class="risk-gauge" style="margin-top: 24px;">
               <svg viewBox="0 0 200 200">
                 <circle cx="100" cy="100" r="80" fill="none" stroke="#2d5a4a" stroke-width="12"/>
@@ -488,7 +488,7 @@
           <div id="alertsList">
             <div class="empty-state" id="alertsEmpty">
               <div class="empty-state-icon">🔔</div>
-              <div class="empty-state-text">No alerts yet — add alerts manually or simulate one</div>
+              <div class="empty-state-text">No alerts yet. Add alerts manually or simulate one.</div>
             </div>
           </div>
           <div style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
@@ -537,7 +537,7 @@
             <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 10px;">
               <button class="btn btn-primary" onclick="simulateFlareAlert()" style="width: 100%;">Simulate Flare Alert</button>
               <button class="btn btn-secondary" onclick="addAlert('info', 'Check-in request sent to patient.')" style="width: 100%;">Send Check-In Request</button>
-              <button class="btn btn-danger" onclick="addAlert('critical', 'EMERGENCY — All care team contacts notified.')" style="width: 100%;">Emergency Contact All</button>
+              <button class="btn btn-danger" onclick="addAlert('critical', 'EMERGENCY: All care team contacts notified.')" style="width: 100%;">Emergency Contact All</button>
             </div>
           </div>
         </div>
@@ -548,7 +548,7 @@
     <div class="page" id="page-summary">
       <div class="card">
         <div class="card-title">Visit Summary Generator</div>
-        <div class="card-subtitle">Powered by Featherless AI — DeepSeek-V3</div>
+        <div class="card-subtitle">Powered by Featherless AI (DeepSeek-V3)</div>
         <div style="margin-top: 16px;">
           <textarea class="textarea" id="visitNotes" placeholder="Type or paste clinical visit notes here...&#10;&#10;Example: Patient presents for routine follow-up. Reports changes in symptom frequency over the past week. Sleep has been poor. Current medications: ..."></textarea>
           <div style="display: flex; gap: 12px; margin-top: 16px;">
@@ -564,7 +564,7 @@
     <div class="page" id="page-chat">
       <div class="card">
         <div class="card-title">NeuroSync Care Assistant</div>
-        <div class="card-subtitle">Powered by Featherless AI — DeepSeek-V3</div>
+        <div class="card-subtitle">Powered by Featherless AI (DeepSeek-V3)</div>
         <div class="chat-container" style="margin-top: 16px;">
           <div class="chat-messages" id="chatMessages">
             <div class="chat-bubble chat-assistant">Hello. Ask me anything about patient care, symptom management, medication interactions, or clinical decision support.</div>
@@ -596,21 +596,21 @@
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Emergency Contact 1 — Name</label>
+            <label class="form-label">Emergency Contact 1: Name</label>
             <input class="form-input" id="eContact1Name" placeholder="Name">
           </div>
           <div class="form-group">
-            <label class="form-label">Emergency Contact 1 — Phone</label>
+            <label class="form-label">Emergency Contact 1: Phone</label>
             <input class="form-input" id="eContact1Phone" placeholder="Phone number">
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Emergency Contact 2 — Name</label>
+            <label class="form-label">Emergency Contact 2: Name</label>
             <input class="form-input" id="eContact2Name" placeholder="Name">
           </div>
           <div class="form-group">
-            <label class="form-label">Emergency Contact 2 — Phone</label>
+            <label class="form-label">Emergency Contact 2: Phone</label>
             <input class="form-input" id="eContact2Phone" placeholder="Phone number">
           </div>
         </div>
@@ -755,7 +755,7 @@
       const toggle = document.getElementById('demoToggle');
       const statusText = document.getElementById('statusText');
       toggle.classList.toggle('active', demoMode);
-      statusText.textContent = demoMode ? 'Demo Mode' : 'Live — Featherless AI';
+      statusText.textContent = demoMode ? 'Demo Mode' : 'Live: Featherless AI';
     }
 
     // ─── Profile ──────────────────────────────────────
@@ -966,7 +966,7 @@
     }
 
     function simulateFlareAlert() {
-      addAlert('critical', '<strong>FLARE ALERT</strong> — Significant symptom escalation detected. ' + getPatientName() + ' may need immediate assistance.');
+      addAlert('critical', '<strong>FLARE ALERT:</strong> Significant symptom escalation detected. ' + getPatientName() + ' may need immediate assistance.');
     }
 
     // ─── Care Team ────────────────────────────────────
@@ -1024,7 +1024,7 @@
 
         const output = document.getElementById('summaryOutput');
         const formatted = (data.summary || '').replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/## (.*?)(<br>|$)/g, '<h2>$1</h2>').replace(/### (.*?)(<br>|$)/g, '<h3>$1</h3>');
-        const modelLabel = data.model === 'demo-mode' ? 'Demo Mode' : 'Featherless AI — ' + data.model;
+        const modelLabel = data.model === 'demo-mode' ? 'Demo Mode' : 'Featherless AI (' + data.model + ')';
         output.innerHTML = '<div class="card"><div class="card-header"><div class="card-title">' + (format === 'structured' ? 'Structured Clinical Note' : 'Patient-Friendly Summary') + '</div><div style="font-size:12px;color:var(--text-muted);">' + modelLabel + '</div></div><div class="summary-output">' + formatted + '</div></div>';
       } catch (e) {
         console.error(e);
@@ -1102,7 +1102,7 @@
       const c2Phone = document.getElementById('eContact2Phone').value || '';
 
       const medsHtml = medications.length > 0
-        ? medications.map(m => m.name + (m.dose ? ' — ' + m.dose : '')).join('<br>')
+        ? medications.map(m => m.name + (m.dose ? ' (' + m.dose + ')' : '')).join('<br>')
         : 'No medications entered';
 
       const diagHtml = diagnosis + (conditions ? '<br>' + conditions.split(',').map(c => c.trim()).join('<br>') : '');
@@ -1153,9 +1153,9 @@
       .then(d => {
         const statusText = document.getElementById('statusText');
         if (d.featherlessConfigured) {
-          statusText.textContent = 'Connected — AI Ready';
+          statusText.textContent = 'Connected: AI Ready';
         } else {
-          statusText.textContent = 'Connected — No AI Key';
+          statusText.textContent = 'Connected: No AI Key';
         }
       })
       .catch(() => {

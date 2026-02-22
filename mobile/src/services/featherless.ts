@@ -1,4 +1,4 @@
-// Featherless AI adapter — OpenAI-compatible inference
+// Featherless AI adapter (OpenAI-compatible inference)
 
 const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL || 'https://neurosync-care-server.onrender.com';
 const FEATHERLESS_BASE_URL = 'https://api.featherless.ai/v1';
@@ -34,7 +34,7 @@ const MOCK_CHAT_RESPONSES: Record<string, string> = {
   emergency: "In an emergency situation:\n\n1. **Stay calm** and follow your emergency action plan if you have one.\n2. **Contact your caregiver** using the emergency alert in this app.\n3. **If you fall**, assess for injury before trying to get up.\n4. **Keep your emergency card accessible** as it contains your diagnosis, medications, and emergency contacts.\n\n*Call 911 for any life-threatening emergency.*",
 };
 
-const MOCK_SUMMARY_STRUCTURED = `## Visit Summary — Structured Note
+const MOCK_SUMMARY_STRUCTURED = `## Visit Summary: Structured Note
 
 **Date:** ${new Date().toLocaleDateString()}
 
@@ -51,7 +51,7 @@ Neurological condition management reviewed. Current medication regimen evaluated
 4. Follow-up in 4 weeks
 5. Caregiver to monitor for any new or worsening symptoms`;
 
-const MOCK_SUMMARY_PATIENT = `## Your Visit Summary — Easy to Understand
+const MOCK_SUMMARY_PATIENT = `## Your Visit Summary (Easy to Understand)
 
 **Your appointment on ${new Date().toLocaleDateString()}**
 
@@ -92,14 +92,14 @@ export async function chatWithFeatherless(
     if (!response.ok) {
       const errorText = await response.text();
       console.error(`Chat API error ${response.status}: ${errorText}`);
-      return getMockChatResponse(messages) + '\n\n*[Demo fallback — server unavailable]*';
+      return getMockChatResponse(messages) + '\n\n*[Demo fallback: server unavailable]*';
     }
 
     const data = await response.json();
     return data.content || data.choices?.[0]?.message?.content || 'No response received.';
   } catch (error) {
     console.error('Chat request failed:', error);
-    return getMockChatResponse(messages) + '\n\n*[Demo fallback — connection error]*';
+    return getMockChatResponse(messages) + '\n\n*[Demo fallback: connection error]*';
   }
 }
 
@@ -132,8 +132,8 @@ export async function summarizeVisitNotes(
   } catch (error) {
     console.error('Summarize request failed:', error);
     return format === 'structured'
-      ? MOCK_SUMMARY_STRUCTURED + '\n\n*[Demo fallback — connection error]*'
-      : MOCK_SUMMARY_PATIENT + '\n\n*[Demo fallback — connection error]*';
+      ? MOCK_SUMMARY_STRUCTURED + '\n\n*[Demo fallback: connection error]*'
+      : MOCK_SUMMARY_PATIENT + '\n\n*[Demo fallback: connection error]*';
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "name": "neurosync-care",
   "version": "1.0.0",
-  "description": "NeuroSync Care — AI-Powered Preventive Health Partner + Diagnostic Assistant. Axxess Hackathon 2026.",
+  "description": "NeuroSync Care: AI-Powered Preventive Health Partner and Diagnostic Assistant. Axxess Hackathon 2026.",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",

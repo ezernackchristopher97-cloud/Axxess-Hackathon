@@ -1,7 +1,7 @@
 {
   "name": "neurosync-care-server",
   "version": "1.0.0",
-  "description": "NeuroSync Care backend — Featherless AI proxy + risk scoring API",
+  "description": "NeuroSync Care backend: Featherless AI proxy and risk scoring API",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",

@@ -8,7 +8,7 @@
 
 ## Overview
 
-NeuroSync Care is a mobile application for patients with Parkinson's disease and related neurological conditions. It integrates features from three of my prior systems—REOP AI, Neural Entropy, and ReUnity—into a single platform that bridges the gap between patient, caregiver, clinician, and first responder.
+NeuroSync Care is a mobile application for patients with neurological conditions. It integrates features from three of my prior systems (REOP AI, Neural Entropy, and ReUnity) into a single platform that connects the patient, caregiver, clinician, and first responder.
 
 The project addresses both Axxess Hackathon tracks: an **AI-driven preventive health partner** (Track A) and a **diagnostic assistant** (Track B).
 
@@ -16,10 +16,10 @@ The project addresses both Axxess Hackathon tracks: an **AI-driven preventive he
 
 | Feature                 | Description                                                  | Original System    |
 | ----------------------- | ------------------------------------------------------------ | ------------------ |
-| Patient Profile         | Parkinson's-centered medical profile with symptoms, meds, allergies. | New                |
+| Patient Profile         | Medical profile with symptoms, medications, and allergies.   | New                |
 | Predictive Risk Score   | Entropy-based stability scoring via the BoraFramework.       | Neural Entropy     |
 | Caregiver Alerts        | Real-time alert feed with care team management.              | ReUnity            |
-| Visit Summary Generator | Structured & patient-friendly summaries via Featherless AI.  | New + Featherless  |
+| Visit Summary Generator | Structured and patient-friendly summaries via Featherless AI.| New + Featherless  |
 | Assistant Chat          | Health information assistant.                                | REOP AI + Featherless |
 | Emergency Card          | High-visibility card for first responders.                   | ReUnity            |
 | Demo Mode               | Toggles between mock data and live AI.                       | New                |
