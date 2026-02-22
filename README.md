@@ -22,6 +22,7 @@ The project addresses both Axxess Hackathon tracks: an **AI-driven preventive he
 | Visit Summary Generator | Structured and patient-friendly summaries via Featherless AI.| New + Featherless  |
 | Assistant Chat          | Health information assistant.                                | REOP AI + Featherless |
 | Emergency Card          | High-visibility card for first responders.                   | ReUnity            |
+| ICD-10 Code Lookup      | Live search against NLM/CMS ICD-10-CM for billing codes.     | New                |
 | Demo Mode               | Toggles between mock data and live AI.                       | New                |
 
 ---
@@ -80,4 +81,4 @@ The mobile app uses REOP AI Mobile (Expo 54, React 19) as its base, with modules
 
 ## Source Code
 
-All original source code (843 files, 342,479 lines) is in the `/archive` directory.
+Original source code from the three integrated projects is in the `/archive` directory.

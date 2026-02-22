@@ -325,6 +325,22 @@
             <input class="form-input" id="pConditions" placeholder="e.g. Dystonia, REM Sleep Disorder">
           </div>
         </div>
+
+        <!-- ICD-10 Code Lookup -->
+        <div class="form-row">
+          <div class="form-group" style="position: relative;">
+            <label class="form-label">ICD-10 Code Lookup <span style="font-weight:400; color: var(--text-muted);">(Source: NLM / CMS ICD-10-CM)</span></label>
+            <input class="form-input" id="icdSearch" placeholder="Search by condition name or code..." autocomplete="off" oninput="searchICD(this.value)">
+            <div id="icdDropdown" style="display:none; position:absolute; top:100%; left:0; right:0; z-index:50; background:var(--bg-card); border:1px solid var(--border); border-radius:0 0 10px 10px; max-height:200px; overflow-y:auto;"></div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Assigned ICD-10 Codes</label>
+            <div id="icdTags" style="display:flex; flex-wrap:wrap; gap:8px; min-height:42px; padding:8px 12px; border-radius:10px; border:1px solid var(--border); background:var(--bg-light); align-items:center;">
+              <span style="color:var(--text-muted); font-size:13px;" id="icdPlaceholder">No codes assigned</span>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <label class="form-label">Blood Type</label>
           <input class="form-input" id="pBloodType" placeholder="e.g. O+" style="max-width: 200px;">
@@ -630,6 +646,63 @@
     let alerts = [];
     let careTeam = [];
     let lastRiskData = null;
+    let assignedICDCodes = [];
+    let icdSearchTimeout = null;
+
+    // ─── ICD-10 Code Lookup (NLM Clinical Tables API, CMS ICD-10-CM) ──
+    function searchICD(query) {
+      clearTimeout(icdSearchTimeout);
+      const dropdown = document.getElementById('icdDropdown');
+      if (!query || query.length < 2) { dropdown.style.display = 'none'; return; }
+      icdSearchTimeout = setTimeout(function() {
+        fetch('https://clinicaltables.nlm.nih.gov/api/icd10cm/v3/search?sf=code,name&terms=' + encodeURIComponent(query) + '&maxList=8')
+          .then(function(r) { return r.json(); })
+          .then(function(data) {
+            var results = data[3] || [];
+            if (!results.length) { dropdown.style.display = 'none'; return; }
+            dropdown.innerHTML = results.map(function(item) {
+              return '<div style="padding:10px 14px; cursor:pointer; border-bottom:1px solid var(--border); font-size:13px; display:flex; justify-content:space-between; align-items:center;" ' +
+                'onmouseover="this.style.background=\'var(--bg-light)\'" onmouseout="this.style.background=\'transparent\'" ' +
+                'onclick="addICDCode(\'' + item[0] + '\', \'' + item[1].replace(/'/g, "\\'") + '\')">' +
+                '<span style="color:var(--primary); font-weight:600; margin-right:12px;">' + item[0] + '</span>' +
+                '<span style="color:var(--text-secondary); flex:1; text-align:left;">' + item[1] + '</span>' +
+                '</div>';
+            }).join('');
+            dropdown.style.display = 'block';
+          })
+          .catch(function() { dropdown.style.display = 'none'; });
+      }, 300);
+    }
+
+    function addICDCode(code, name) {
+      if (assignedICDCodes.find(function(c) { return c.code === code; })) return;
+      assignedICDCodes.push({ code: code, name: name });
+      document.getElementById('icdSearch').value = '';
+      document.getElementById('icdDropdown').style.display = 'none';
+      renderICDTags();
+    }
+
+    function removeICDCode(code) {
+      assignedICDCodes = assignedICDCodes.filter(function(c) { return c.code !== code; });
+      renderICDTags();
+    }
+
+    function renderICDTags() {
+      var container = document.getElementById('icdTags');
+      if (!assignedICDCodes.length) {
+        container.innerHTML = '<span style="color:var(--text-muted); font-size:13px;" id="icdPlaceholder">No codes assigned</span>';
+        return;
+      }
+      container.innerHTML = assignedICDCodes.map(function(c) {
+        return '<span class="tag tag-info" style="cursor:pointer; font-size:12px; padding:5px 10px;" onclick="removeICDCode(\'' + c.code + '\')" title="Click to remove">' +
+          c.code + ' &times;</span>';
+      }).join('');
+    }
+
+    function getICDCodesString() {
+      if (!assignedICDCodes.length) return 'None assigned';
+      return assignedICDCodes.map(function(c) { return c.code + ' (' + c.name + ')'; }).join('; ');
+    }
 
     // ─── BoraFramework Entropy (ported from Neural Entropy architecture) ──
     function computeShannonEntropy(data) {
@@ -721,6 +794,7 @@
 
       return {
         name, dob, mrn, provider, diagnosis, conditions, bloodType,
+        icdCodes: getICDCodesString(),
         medications: medList, alerts: alertList, careTeam: teamList, riskScore: riskInfo,
         toSystemPrompt: function() {
           return 'You are NeuroSync Care, a clinical decision support assistant specializing in neurological conditions including Parkinson\'s disease, Multiple Sclerosis, Epilepsy, ALS, Alzheimer\'s, Traumatic Brain Injury, Stroke recovery, Huntington\'s, Dystonia, Essential Tremor, Myasthenia Gravis, and other neurological disorders. Provide evidence-based, condition-specific responses. Always remind that this is informational support, not medical advice.\n\n'
@@ -731,6 +805,7 @@
             + (this.provider ? '- Provider: ' + this.provider + '\n' : '')
             + (this.diagnosis ? '- Primary Diagnosis: ' + this.diagnosis + '\n' : '')
             + (this.conditions ? '- Other Conditions: ' + this.conditions + '\n' : '')
+            + (this.icdCodes !== 'None assigned' ? '- ICD-10 Codes: ' + this.icdCodes + '\n' : '')
             + (this.bloodType ? '- Blood Type: ' + this.bloodType + '\n' : '')
             + '- Medications: ' + this.medications + '\n'
             + '- Current Risk: ' + this.riskScore + '\n'
