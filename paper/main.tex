@@ -18,6 +18,7 @@
 \usepackage{setspace}
 \usepackage{fancyhdr}
 \usepackage{microtype}
+\usepackage[skip=5pt plus 2pt]{parskip}
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage{hyperref}
 \usepackage{cleveref}
@@ -29,7 +30,7 @@
   urlcolor=NavyBlue
 }
 
-\setstretch{1.15}
+\setstretch{1.05}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -51,15 +52,11 @@ A Physical Framework for Self-Referential\\Information Processing}}
 \thispagestyle{empty}
 
 \begin{abstract}
-Recent experimental work reconstructing neural population dynamics from grid cells in the medial entorhinal cortex has revealed that the underlying activity space forms a toroidal manifold.
-This discovery, reported by Gardner et al.\ (2022), provides direct empirical evidence that neural computation can evolve on attractor geometries corresponding to $S^1 \times S^1$.
-The present paper develops a physical framework connecting this empirical finding to broader principles of recursive oscillatory dynamics in neural systems.
-We argue that coupled oscillatory processes in the brain naturally produce toroidal attractor manifolds in phase space, consistent with predictions from the Kolmogorov--Arnold--Moser framework for quasi-periodic motion.
-The electromagnetic spectrum is treated as the base physical layer, with particular attention to the measurement gap between conventional electrophysiological recordings (Hz to kHz) and the molecular vibrational dynamics of neural tissue ($10^{9}$ to $10^{13}$~Hz).
-Quaternion rotations are introduced as a natural mathematical representation of coupled phase dynamics on higher-dimensional tori.
-Entropy gradients and low-dimensional attractor manifolds are examined as organizing principles of neural state space.
-We further propose that the evolutionary pressure imposed by the gut microbiome, which required the host nervous system to develop recursive internal models of a complex and fluctuating microbial ecosystem, contributed to the neural pruning and hierarchical organization that enabled the transition beyond the primitive consciousness state described by Julian Jaynes.
-The conclusion connects Gardner's toroidal neural manifolds, entropy-constrained attractor dynamics, modular oscillatory organization, the Jaynesian transition, and recursive self-reference consistent with G\"{o}del-type logical structure in sufficiently complex formal systems.
+Gardner et al.\ (2022) demonstrated that the joint population activity of grid cells in the medial entorhinal cortex resides on a toroidal manifold $T^2 = S^1 \times S^1$, providing the first direct empirical evidence that neural computation evolves on non-trivial topological attractor geometries.
+
+This paper develops a physical framework explaining why toroidal manifolds arise in recursive neural systems. Coupled oscillatory processes naturally produce toroidal attractors in phase space, consistent with the Kolmogorov--Arnold--Moser theorem for quasi-periodic motion. The electromagnetic spectrum serves as the base physical layer, with particular attention to the measurement gap between conventional electrophysiology (Hz to kHz) and molecular vibrational dynamics ($10^{9}$ to $10^{13}$~Hz). Quaternion rotations provide a natural mathematical representation of coupled phase dynamics on higher-dimensional tori, and entropy gradients constrain neural activity onto low-dimensional attractor manifolds.
+
+The framework connects these dynamical principles to the emergence of modular oscillatory organization, the evolutionary pressures that shaped recursive internal modeling in the nervous system, and the transition to self-referential information processing. Testable predictions are presented for each component of the framework.
 \end{abstract}
 
 \newpage
@@ -69,38 +66,29 @@ The conclusion connects Gardner's toroidal neural manifolds, entropy-constrained
 %% ============================================================
 \section{Introduction}\label{sec:intro}
 
-The question of how neural systems organize information remains one of the central problems in both neuroscience and physics.
-Conventional approaches to understanding brain function have relied primarily on computational metaphors drawn from symbolic processing \cite{Penrose1989}, Bayesian inference \cite{Friston2010}, or integrated information theory \cite{Tononi2008}.
-While each of these frameworks captures important aspects of neural computation, few have examined the geometric and dynamical structure of neural activity in phase space.
+\subsection{Grid Cells and Continuous Attractor Networks}
 
-A significant empirical advance occurred with the discovery that grid cells in the medial entorhinal cortex fire in characteristic hexagonal spatial patterns \cite{Hafting2005}.
-This finding, which contributed to the Nobel Prize in Physiology or Medicine awarded to May-Britt Moser and Edvard I.\ Moser, established that the brain contains a structured spatial coding system.
-More recently, Gardner et al.\ \cite{Gardner2022} demonstrated that the joint population activity of grid cells from an individual module resides on a toroidal manifold, providing the first direct visualization of continuous attractor network dynamics in the brain.
-This result confirmed theoretical predictions that grid cell networks implement continuous attractor dynamics on a two-dimensional torus $T^2 = S^1 \times S^1$ \cite{Yoon2013}.
+The discovery that grid cells in the medial entorhinal cortex fire in characteristic hexagonal spatial patterns \cite{Hafting2005} established that the mammalian brain contains a structured internal coordinate system for spatial representation. This finding, which contributed to the Nobel Prize in Physiology or Medicine awarded to May-Britt Moser and Edvard I.\ Moser, revealed that individual grid cells fire at the vertices of a regular triangular lattice as an animal traverses an environment. Grid cells are organized into discrete modules, each with a characteristic spatial scale, and the ratio of scales between adjacent modules follows an approximately constant geometric factor \cite{Stensola2012}. The spatial code of a single grid cell can be described by two circular phase variables, meaning that the state space of an individual cell's firing pattern is inherently periodic.
 
-The toroidal structure observed in grid cell populations is not an isolated curiosity.
-From the perspective of dynamical systems theory, toroidal manifolds arise naturally whenever multiple oscillatory processes interact.
-A single periodic process traces a circle $S^1$ in phase space; two coupled periodic processes trace a torus $S^1 \times S^1$; and $n$ interacting oscillatory variables produce an $n$-dimensional torus $T^n$ \cite{Strogatz2015}.
-The Kolmogorov--Arnold--Moser (KAM) theorem establishes that such quasi-periodic toroidal motion persists under small perturbations of integrable Hamiltonian systems \cite{Kolmogorov1954, Arnold1963, Moser1962}, providing a rigorous mathematical foundation for the stability of these structures.
+Theoretical models proposed that grid cell networks implement continuous attractor dynamics, in which the population activity evolves on a low-dimensional manifold embedded in the high-dimensional space of possible firing rate vectors \cite{Yoon2013}. In a continuous attractor network, the set of stable states forms a connected manifold rather than a collection of isolated fixed points, and the system can move smoothly along this manifold in response to velocity inputs. For a two-dimensional periodic spatial code, the predicted attractor manifold is a two-dimensional torus $T^2 = S^1 \times S^1$.
 
-Neural systems are replete with oscillatory dynamics.
-Electroencephalographic recordings reveal rhythmic activity spanning multiple frequency bands, from slow delta oscillations ($<4$~Hz) through theta (4--8~Hz), alpha (8--13~Hz), beta (13--30~Hz), and gamma ($>30$~Hz) rhythms \cite{Buzsaki2006, Buzsaki2004}.
-These oscillations interact through cross-frequency coupling mechanisms, notably theta-gamma phase-amplitude coupling observed in the hippocampus and neocortex \cite{Canolty2006, Tort2009, Lisman2005}.
-Such coupled oscillatory dynamics provide precisely the conditions under which toroidal attractor manifolds are expected to emerge.
+\subsection{The Gardner et al.\ Discovery}
 
-The present paper develops a physical framework that connects the empirical observation of toroidal manifolds in grid cell populations to a broader theory of recursive oscillatory dynamics in neural systems.
-The argument proceeds through several layers.
-First, the electromagnetic spectrum is established as the base physical layer of the framework, with attention to the large measurement gap between conventional electrophysiology and the molecular vibrational dynamics of neural tissue.
-Second, the phase space geometry of coupled oscillatory systems is developed, showing how toroidal manifolds arise from interacting periodic processes.
-Third, the grid cell evidence is presented as the empirical anchor.
-Fourth, quaternion rotations are introduced as a natural mathematical representation of coupled phase dynamics on higher-dimensional tori.
-Fifth, entropy gradients and attractor stabilization are examined as organizing principles.
-Sixth, the evolutionary pressure imposed by the gut microbiome is proposed as a driver of the neural pruning and recursive internal organization that enabled the transition beyond the primitive consciousness state described by Jaynes \cite{Jaynes1976}.
-Finally, the conclusion connects these threads to recursive self-reference consistent with G\"{o}del-type logical structure \cite{Godel1931, Hofstadter1979}.
+The decisive empirical confirmation came from Gardner et al.\ \cite{Gardner2022}, who recorded simultaneously from large populations of grid cells in individual modules of the rat medial entorhinal cortex. Using persistent cohomology, a technique from topological data analysis that can recover the topology of a manifold from a finite point cloud, they reconstructed the shape of the manifold on which the population activity resides. The analysis revealed that the joint activity of grid cells within a single module traces a path on a two-dimensional torus $T^2 = S^1 \times S^1$.
 
-The central claim is not that toroidal attractor dynamics fully explain consciousness.
-Rather, the paper argues that recursive oscillatory systems naturally produce toroidal attractor manifolds in phase space, that neural systems contain the coupled oscillatory dynamics necessary for such manifolds to emerge, and that the grid cell system provides a concrete empirical demonstration of this principle.
-The framework suggests that toroidal attractor geometry may represent a general organizing structure for recursive neural computation, with implications for understanding how modular oscillatory organization enabled the emergence of self-referential information processing.
+This result was significant for several reasons. It provided the first direct visualization of continuous attractor network dynamics in the brain. It confirmed that neural population activity can be organized on non-trivial topological manifolds. And it demonstrated that the tools of algebraic topology can be applied to experimental neural data to recover geometric structure that is not visible in the activity of individual neurons.
+
+\subsection{Why Toroidal Geometry Matters}
+
+The toroidal structure observed in grid cell populations is not an isolated property of the spatial navigation system. From the perspective of dynamical systems theory, toroidal manifolds arise naturally whenever multiple oscillatory processes interact. A single periodic process traces a circle $S^1$ in phase space; two coupled periodic processes trace a torus $S^1 \times S^1$; and $n$ interacting oscillatory variables produce an $n$-dimensional torus $T^n$ \cite{Strogatz2015}. The Kolmogorov--Arnold--Moser (KAM) theorem establishes that such quasi-periodic toroidal motion persists under small perturbations of integrable Hamiltonian systems \cite{Kolmogorov1954, Arnold1963, Moser1962}, providing a rigorous mathematical foundation for the structural stability of these manifolds.
+
+Neural systems contain precisely the oscillatory dynamics needed to produce toroidal attractors. Electroencephalographic recordings reveal rhythmic activity spanning multiple frequency bands, from slow delta oscillations ($<4$~Hz) through theta (4--8~Hz), alpha (8--13~Hz), beta (13--30~Hz), and gamma ($>30$~Hz) rhythms \cite{Buzsaki2006, Buzsaki2004}. These oscillations interact through cross-frequency coupling mechanisms, notably theta-gamma phase-amplitude coupling observed in the hippocampus and neocortex \cite{Canolty2006, Tort2009, Lisman2005}. Such coupled oscillatory dynamics provide the conditions under which toroidal attractor manifolds are expected to emerge.
+
+\subsection{Goal of This Paper}
+
+This paper develops a physical dynamical framework explaining why toroidal manifolds arise in recursive neural systems. The argument proceeds through several layers: the electromagnetic spectrum as the base physical layer, the phase space geometry of coupled oscillatory systems, the grid cell evidence as empirical anchor, quaternion rotations as mathematical representation of multi-band phase dynamics, entropy gradients as organizing principles, evolutionary pressure from the gut microbiome as a driver of recursive internal organization, and the transition beyond the primitive consciousness state described by Jaynes \cite{Jaynes1976}. The conclusion connects these threads to recursive self-reference consistent with G\"{o}del-type logical structure \cite{Godel1931, Hofstadter1979}.
+
+The central claim is not that toroidal attractor dynamics fully explain consciousness. Rather, the paper argues that recursive oscillatory systems naturally produce toroidal attractor manifolds in phase space, that neural systems contain the coupled oscillatory dynamics necessary for such manifolds to emerge, and that the grid cell system provides a concrete empirical demonstration of this principle.
 
 
 %% ============================================================
@@ -149,8 +137,9 @@ High gamma & 100--300 Hz & Local cortical computation \\
 \end{tabular}
 \end{table}
 
-Below these neural oscillation bands, molecular and structural dynamics in biological tissue operate at vastly higher frequencies.
-Protein conformational vibrations, hydrogen bond network dynamics, membrane oscillations, and cytoskeletal lattice modes occur in the gigahertz to terahertz range ($10^{9}$ to $10^{13}$~Hz) \cite{Markelz2008, Frohlich1968}.
+Above the range of conventional electrophysiology, several intermediate frequency regimes remain poorly characterized in living neural tissue.
+Ion channel kinetics and synaptic transmission dynamics operate in the kilohertz to megahertz range ($10^3$ to $10^6$~Hz).
+Protein conformational vibrations, hydrogen bond network dynamics, membrane oscillations, and cytoskeletal lattice modes occur at still higher frequencies in the gigahertz to terahertz range ($10^{9}$ to $10^{13}$~Hz) \cite{Markelz2008, Frohlich1968}.
 Fr\"{o}hlich \cite{Frohlich1968} proposed that biological systems supplied with constant metabolic energy can produce coherent longitudinal electric modes in the frequency region between $10^{11}$ and $10^{12}$~s$^{-1}$, a prediction grounded in the dipolar properties of cell membranes and recurring molecular bonds.
 Subsequent terahertz spectroscopy studies have confirmed that biological macromolecules exhibit collective vibrational modes in this frequency range, with the THz dielectric response being highly sensitive to hydration, temperature, binding state, and conformational change \cite{Markelz2008}.
 Sahu et al.\ \cite{Sahu2013} reported electromagnetic resonance measurements on single brain microtubules, identifying oscillatory behavior at frequencies consistent with lattice vibrational modes.
@@ -167,7 +156,7 @@ The characteristic wavelength at 1~THz is approximately 300~$\mu$m, which overla
 Second, collective oscillatory modes in this frequency range can interact with mesoscopic biological structures without ionizing molecules, making them relevant to structural organization rather than chemical transformation.
 Third, the existence of coherent biological modes in this regime, as proposed by Fr\"{o}hlich \cite{Frohlich1968} and partially supported by THz spectroscopy data \cite{Markelz2008}, suggests that higher-frequency electromagnetic dynamics may contribute to neural organization in ways that are currently invisible to standard neurophysiological methods.
 
-The scientifically cautious formulation of this observation is as follows: there exists a large measurement gap between the frequencies accessible through EEG and the much higher frequencies associated with molecular and lattice dynamics in neural tissue; the terahertz range is particularly interesting because it corresponds to collective vibrational modes of biological structures; and investigating this region may reveal mechanisms of neural organization that are not observable through conventional electrophysiological methods.
+The key observation is that a large measurement gap exists between the frequencies accessible through EEG and the much higher frequencies associated with molecular and lattice dynamics in neural tissue. Current neuroscience instrumentation was not designed to detect signals in this intermediate range. The terahertz band is of particular interest because it corresponds to collective vibrational modes of biological structures, and THz spectroscopy may reveal previously unobserved electromagnetic dynamics in neural tissue that are relevant to the synchronization landscape of macroscopic oscillatory activity.
 
 \begin{figure}[H]
 \centering
@@ -178,7 +167,7 @@ The scientifically cautious formulation of this observation is as follows: there
 
 \subsection{Multi-Scale Electromagnetic Coupling}
 
-The framework presented here does not claim that terahertz radiation directly produces consciousness.
+The framework presented here does not claim that terahertz radiation directly influences neural computation.
 Rather, it proposes that the electromagnetic spectrum provides a continuous coordinate system for mapping biological dynamics across scales.
 Low-frequency brain rhythms coordinate large-scale network states, while higher-frequency molecular dynamics encode finer structural information.
 The electromagnetic spectrum bridges these layers, allowing the possibility that phase synchronization mechanisms operating at different frequency scales contribute to the overall organization of neural dynamics.
@@ -255,10 +244,12 @@ The toroidal manifold observed in grid cell populations \cite{Gardner2022} repre
 
 \subsection{Discovery and Properties of Grid Cells}
 
-Grid cells were first described by Hafting et al.\ \cite{Hafting2005} in the dorsocaudal medial entorhinal cortex (dMEC) of freely moving rats.
-Each grid cell fires whenever the animal's position coincides with a vertex of a regular triangular (hexagonal) lattice that tiles the environment.
-The spatial firing pattern of a single grid cell is characterized by three parameters: the spacing between grid vertices, the orientation of the grid axes relative to the environment, and the spatial phase (the offset of the grid pattern).
+Having introduced the grid cell system and the Gardner et al.\ result in Section~\ref{sec:intro}, this section provides a more detailed treatment of the empirical evidence and its implications for the toroidal attractor framework.
+
+Grid cells, first described by Hafting et al.\ \cite{Hafting2005} in the dorsocaudal medial entorhinal cortex (dMEC), fire whenever the animal's position coincides with a vertex of a regular triangular (hexagonal) lattice that tiles the environment.
+The spatial firing pattern of a single grid cell is characterized by three parameters: the spacing between grid vertices, the orientation of the grid axes, and the spatial phase (the offset of the grid pattern).
 Neighboring grid cells share similar spacing and orientation but differ in phase, forming discrete modules with common geometric properties \cite{Hafting2005, Bellmund2018}.
+Stensola et al.\ \cite{Stensola2012} demonstrated that the ratio of grid spacings between adjacent modules is approximately constant, following a geometric progression with a scale factor of roughly 1.4.
 
 The grid cell system has several properties that make it particularly relevant to the present framework.
 First, the hexagonal firing pattern is periodic in two spatial dimensions, meaning that the spatial code of a single grid cell can be described by two circular phase variables.
@@ -268,9 +259,19 @@ These properties suggest that the grid cell system implements an internal coordi
 
 \subsection{The Gardner et al.\ Discovery: Population Activity on a Torus}
 
-The decisive empirical result was reported by Gardner et al.\ \cite{Gardner2022}, who recorded simultaneously from large populations of grid cells in individual modules of the rat medial entorhinal cortex.
-Using persistent cohomology, a technique from topological data analysis, they reconstructed the topology of the manifold on which the population activity resides.
-The analysis revealed that the joint activity of grid cells within a single module traces a path on a two-dimensional torus $T^2 = S^1 \times S^1$ (see Figure~\ref{fig:toroidal_manifold}).
+As described in Section~\ref{sec:intro}, Gardner et al.\ \cite{Gardner2022} used persistent cohomology to reconstruct the topology of the manifold on which grid cell population activity resides, revealing a two-dimensional torus $T^2 = S^1 \times S^1$ (see Figure~\ref{fig:toroidal_manifold}).
+The methodological details of this result merit further discussion.
+
+Gardner et al.\ recorded from large populations of neurons using Neuropixels silicon probes implanted in the medial entorhinal cortex of freely moving rats.
+The high-density recordings captured the simultaneous activity of hundreds of grid cells within individual modules.
+To reconstruct the topology of the population activity manifold, they applied persistent cohomology, a technique from topological data analysis that identifies topological features (connected components, loops, voids) that persist across multiple spatial scales in a point cloud.
+The key insight is that persistent cohomology can detect the presence of non-trivial topology without requiring an explicit embedding or dimensionality reduction step.
+Applied to the grid cell population vectors, the analysis revealed two independent circular cohomology classes, which is the algebraic signature of a torus $T^2 = S^1 \times S^1$.
+
+The robustness of this result was confirmed by several controls.
+The toroidal topology persisted across different recording sessions, different animals, and different behavioral conditions.
+Shuffled data, in which the temporal relationships between neurons were destroyed, did not produce toroidal topology.
+The result was also consistent across different parameter choices in the persistent cohomology pipeline, indicating that the toroidal structure is a genuine feature of the data rather than an artifact of the analysis method.
 
 \begin{figure}[H]
 \centering
@@ -280,8 +281,7 @@ The analysis revealed that the joint activity of grid cells within a single modu
 \end{figure}
 
 This result confirmed theoretical predictions from continuous attractor network models \cite{Yoon2013, Wu2016} and provided the first direct visualization of toroidal attractor dynamics in the brain.
-The significance of this finding extends beyond spatial navigation.
-It demonstrates that neural population activity can be organized on non-trivial topological manifolds, and that the tools of algebraic topology can be used to recover these manifolds from experimental data.
+The significance extends beyond spatial navigation: it establishes that neural population activity can be organized on non-trivial topological manifolds recoverable through algebraic topology.
 
 Subsequent work by Hermansen et al.\ \cite{Hermansen2024} extended the analysis to show that toroidal representations persist even during one-dimensional behavior, indicating that the toroidal structure is an intrinsic property of the network rather than a reflection of the dimensionality of the behavioral task.
 Di Sarra et al.\ \cite{DiSarra2025} further demonstrated that oscillatory dynamics play a central role in maintaining the toroidal topology of grid cell population activity, providing a direct link between the oscillatory framework developed in Section~\ref{sec:phase_space} and the empirical grid cell data.
@@ -447,8 +447,8 @@ This gut-brain axis is bidirectional: descending vagal efferents modulate gut mo
 
 \subsection{Evolutionary Pressure for Internal Recursive Modeling}
 
-The claim advanced here is not simply that the gut and brain are coupled, a fact that is well established in the literature \cite{Cryan2019, Bonaz2018, Dinan2017}.
-The claim is stronger and more specific: the evolutionary pressure imposed by the need to manage a complex, fluctuating internal microbial ecosystem was a significant driver of the neural pruning, hierarchical organization, and recursive internal modeling capacity that characterizes the mammalian brain.
+The argument advanced here goes beyond the established observation that the gut and brain are coupled \cite{Cryan2019, Bonaz2018, Dinan2017}.
+The proposal is that the evolutionary pressure imposed by the need to manage a complex, fluctuating internal microbial ecosystem was a contributing driver of the neural pruning, hierarchical organization, and recursive internal modeling capacity that characterizes the mammalian brain.
 
 The argument proceeds as follows.
 An organism hosting a complex gut microbiome faces a continuous regulatory challenge.
@@ -506,8 +506,9 @@ Continuous entropy management & Low-dimensional attractor manifolds \\
 Julian Jaynes \cite{Jaynes1976} proposed that human consciousness, in the modern introspective sense, is a relatively recent development in human history, emerging approximately 3,000 years ago during the late Bronze Age.
 In Jaynes's account, earlier humans operated in a ``bicameral'' mode in which the right hemisphere generated auditory verbal hallucinations (experienced as the voices of gods or ancestors) that directed behavior, while the left hemisphere executed the commands without the mediating layer of introspective self-awareness that characterizes modern consciousness.
 
-Regardless of the specific historical claims, which remain debated, the Jaynesian framework identifies a genuine computational transition: the emergence of a mode of neural processing in which the system can represent and reflect upon its own internal states.
-This transition, from a mode in which internal signals are experienced as external commands to a mode in which they are recognized as products of the system's own activity, corresponds to the development of recursive self-reference in neural computation.
+The specific historical claims of Jaynes's theory remain debated, and the present paper does not depend on their accuracy.
+What the Jaynesian framework usefully identifies is a computational transition: the emergence of a mode of neural processing in which the system can represent and reflect upon its own internal states.
+Whether or not this transition occurred on the historical timeline Jaynes proposed, the distinction between a neural architecture that cannot distinguish internally generated signals from external ones and an architecture that can is a genuine computational distinction with physical consequences.
 
 \subsection{Modular Oscillatory Organization and the Consciousness Transition}
 
@@ -525,22 +526,24 @@ This is the minimal form of self-reference: the system's representation of its o
 
 \subsection{Recursive Self-Reference and G\"odel-Type Structure}
 
-The connection between self-reference in neural systems and G\"odel's incompleteness theorems \cite{Godel1931} has been explored by several authors, most notably Hofstadter \cite{Hofstadter1979} and Penrose \cite{Penrose1989}.
-The key insight is that any formal system of sufficient complexity to encode arithmetic can construct self-referential statements, statements that refer to properties of the system itself.
-G\"odel's first incompleteness theorem demonstrates that such systems necessarily contain true statements that cannot be proven within the system, a fundamental limitation arising from the capacity for self-reference.
+G\"odel's incompleteness theorems \cite{Godel1931} demonstrate that any formal system of sufficient complexity to encode arithmetic can construct self-referential statements, and that such systems necessarily contain true statements that cannot be proven within the system.
+This is a precise mathematical result about formal systems, not a general claim about physical systems.
+However, several authors, most notably Hofstadter \cite{Hofstadter1979} and Penrose \cite{Penrose1989}, have observed that the structural features underlying G\"odel's result, specifically the capacity for self-reference in sufficiently complex recursive systems, have parallels in neural computation.
 
-The neural framework developed here suggests a physical analogue of this logical structure.
-A neural system with modular oscillatory organization and cross-frequency coupling possesses the computational architecture needed for recursive self-reference: the system can generate representations of its own oscillatory states, and these representations are themselves oscillatory states subject to the same dynamics.
-This creates a recursive loop in which the system's model of itself is embedded within the system being modeled.
+The neural framework developed here identifies a structural resemblance, not an equivalence, between self-referential formal systems and recursive neural dynamics.
+A neural system with modular oscillatory organization and cross-frequency coupling can generate representations of its own oscillatory states, and these representations are themselves oscillatory states subject to the same dynamics.
+This creates a recursive loop in which the system's model of itself is embedded within the system being modeled, a structure that resembles the self-referential encoding at the core of G\"odel's construction.
 
 The toroidal attractor manifolds identified by Gardner et al.\ \cite{Gardner2022} provide a geometric substrate for this recursive structure.
 A trajectory on a torus is inherently self-referential in the topological sense: it returns to previously visited regions of state space, and the pattern of returns encodes information about the global structure of the dynamics.
 Quasi-periodic trajectories on tori, in particular, never exactly repeat but continuously revisit neighborhoods of previous states, creating a form of approximate self-reference that is richer than simple periodicity.
 
-The analogy to G\"odel-type structure should be stated precisely.
-We do not claim that neural systems are formal systems in the mathematical sense, or that G\"odel's theorems apply directly to neural computation.
-Rather, we observe that sufficiently complex recursive systems, whether formal or physical, exhibit a common structural feature: the capacity for self-reference generates both computational power (the ability to represent and reason about the system's own states) and fundamental limitations (the inability to fully capture the system's own dynamics within any finite internal model).
-This structural parallel suggests that the emergence of self-referential consciousness in neural systems may be accompanied by intrinsic limitations analogous to G\"odelian incompleteness, a possibility that has implications for the hard problem of consciousness and for the limits of introspective self-knowledge.
+To be precise: we do not claim that neural systems are formal systems, or that G\"odel's theorems apply directly to neural computation.
+The claim is narrower.
+Sufficiently complex recursive systems, whether formal or physical, share a structural feature: the capacity for self-reference generates both computational power and fundamental limitations.
+In formal systems, self-reference produces true but unprovable statements.
+In recursive neural systems, self-reference produces the capacity for introspective awareness but may also impose intrinsic limits on the completeness of self-knowledge.
+This structural parallel is suggestive rather than deductive, and it indicates a direction for future investigation rather than a proven equivalence.
 
 \begin{figure}[H]
 \centering
@@ -656,22 +659,23 @@ Sufficiently complex recursive systems, whether formal or physical, exhibit a co
 In formal systems, this manifests as the existence of true but unprovable statements.
 In neural systems, it manifests as the capacity for introspective awareness accompanied by intrinsic limits on self-knowledge.
 The toroidal attractor geometry provides a physical substrate for this recursive structure: quasi-periodic trajectories on tori continuously revisit previous states without exact repetition, creating a form of approximate self-reference that is richer than periodicity but bounded by the topology of the manifold.
-As Hofstadter \cite{Hofstadter1979} argued, the ``strange loop'' of self-reference is not a defect of complex systems but a constitutive feature of consciousness itself.
+As Hofstadter \cite{Hofstadter1979} argued, the recursive self-referential structure is not incidental to complex systems but a characteristic feature of systems capable of introspective representation.
 
-The synthesis of these five threads yields a framework in which consciousness is not an epiphenomenon or an emergent mystery, but a natural consequence of the physical dynamics of sufficiently complex oscillatory systems operating under thermodynamic constraints.
-The toroidal manifolds discovered by Gardner et al.\ provide the empirical anchor.
-The entropy-constrained attractor dynamics provide the thermodynamic foundation.
-The modular oscillatory organization provides the computational architecture.
-The gut-brain evolutionary pressure provides the selective force.
-And the recursive self-reference, consistent with G\"odel-type logical structure, provides the defining computational feature of the conscious state.
+These five threads converge on a single conclusion.
+Grid cells empirically demonstrate that neural population dynamics can reside on toroidal manifolds.
+Coupled oscillatory systems mathematically produce toroidal attractors.
+Neural systems contain the oscillatory dynamics necessary for such manifolds to emerge.
+Entropy constraints favor low-dimensional toroidal geometries as thermodynamically efficient substrates for information encoding.
+And the recursive self-reference enabled by modular oscillatory organization, shaped by evolutionary pressure for internal modeling, provides the computational architecture for introspective consciousness.
 
-This framework is not complete.
+The framework is not complete.
 The measurement gap in the terahertz range remains unexplored.
-The extension of toroidal manifold analysis to brain regions beyond the entorhinal cortex is in its early stages.
-The quaternion representation of multi-band coupling dynamics has not yet been tested experimentally.
-And the gut-brain evolutionary pressure argument, while consistent with existing evidence, requires further comparative analysis across species with varying microbiome complexity.
+Toroidal manifold analysis has not yet been extended systematically beyond the entorhinal cortex.
+The quaternion representation of multi-band coupling dynamics has not been tested experimentally.
+The gut-brain evolutionary pressure argument requires further comparative analysis across species with varying microbiome complexity.
 However, the framework generates concrete, testable predictions (Section~\ref{sec:predictions}) that can be addressed with current or near-future experimental technology.
-The convergence of topological data analysis, high-density neural recording, microbiome science, and nonequilibrium thermodynamics creates an unprecedented opportunity to investigate the physical foundations of recursive neural organization and, ultimately, of consciousness itself.
+
+Toroidal manifolds provide a physically grounded dynamical geometry for recursive neural computation.
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}

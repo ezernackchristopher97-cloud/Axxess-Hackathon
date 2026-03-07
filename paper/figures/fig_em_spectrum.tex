@@ -1,4 +1,4 @@
-\documentclass[border=10pt]{standalone}
+\documentclass[border=12pt]{standalone}
 
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,decorations.pathreplacing,patterns}
@@ -7,59 +7,63 @@
 \begin{document}
 \begin{tikzpicture}[>=Stealth, font=\small]
 
-% Main axis
-\draw[->, thick] (0,0) -- (16,0) node[right] {\textbf{Frequency (Hz)}};
+% Title
+\node[above, font=\large\bfseries] at (8.5, 5.2) {Electromagnetic Frequency Hierarchy in Neural Systems};
 
-% Frequency labels along axis
-\foreach \x/\lab in {1/$10^{0}$, 2.5/$10^{3}$, 5/$10^{6}$, 7.5/$10^{9}$, 10/$10^{11}$, 11.5/$10^{12}$, 13/$10^{13}$, 14.5/$10^{15}$} {
+% Main axis
+\draw[->, thick] (0,0) -- (17.5,0) node[right] {\textbf{Frequency (Hz)}};
+
+% Frequency labels along axis (evenly spaced, clear)
+\foreach \x/\lab in {1/$10^{0}$, 3/$10^{3}$, 5.5/$10^{6}$, 8/$10^{9}$, 10/$10^{11}$, 11.5/$10^{12}$, 13/$10^{13}$, 15/$10^{15}$} {
   \draw (\x, -0.15) -- (\x, 0.15);
-  \node[below] at (\x, -0.2) {\lab};
+  \node[below, font=\footnotesize] at (\x, -0.25) {\lab};
 }
 
-% EEG accessible range
-\fill[blue!25, rounded corners=2pt] (0.3, 0.5) rectangle (2.8, 1.8);
-\node[align=center, font=\footnotesize\bfseries] at (1.55, 1.5) {EEG/LFP};
-\node[align=center, font=\footnotesize] at (1.55, 1.0) {Neural\\oscillations};
-\node[align=center, font=\scriptsize] at (1.55, 0.65) {$\delta, \theta, \alpha, \beta, \gamma$};
+% ---- EEG/LFP box ----
+\fill[blue!20, rounded corners=3pt] (0.3, 0.6) rectangle (3.3, 2.4);
+\draw[blue!60, thick, rounded corners=3pt] (0.3, 0.6) rectangle (3.3, 2.4);
+\node[align=center, font=\small\bfseries, blue!70!black] at (1.8, 2.0) {EEG / LFP};
+\node[align=center, font=\footnotesize, blue!70!black] at (1.8, 1.4) {Neural oscillations};
+\node[align=center, font=\footnotesize, blue!70!black] at (1.8, 0.9) {$\delta,\; \theta,\; \alpha,\; \beta,\; \gamma$};
 
-% Measurement gap
-\fill[red!10, rounded corners=2pt] (3.0, 0.5) rectangle (7.2, 1.8);
-\draw[red!60, thick, dashed, rounded corners=2pt] (3.0, 0.5) rectangle (7.2, 1.8);
-\node[align=center, font=\footnotesize\bfseries, red!70!black] at (5.1, 1.5) {Measurement Gap};
-\node[align=center, font=\scriptsize, red!70!black] at (5.1, 1.0) {$\sim$10--12 orders of};
-\node[align=center, font=\scriptsize, red!70!black] at (5.1, 0.7) {magnitude unexplored};
+% ---- Measurement Gap box ----
+\fill[red!8, rounded corners=3pt] (3.8, 0.6) rectangle (7.5, 2.4);
+\draw[red!50, thick, dashed, rounded corners=3pt] (3.8, 0.6) rectangle (7.5, 2.4);
+\node[align=center, font=\small\bfseries, red!65!black] at (5.65, 2.0) {Measurement Gap};
+\node[align=center, font=\footnotesize, red!65!black] at (5.65, 1.35) {${\sim}\,10$--$12$ orders of magnitude};
+\node[align=center, font=\footnotesize, red!65!black] at (5.65, 0.85) {unexplored};
 
-% THz regime
-\fill[green!20, rounded corners=2pt] (9.3, 0.5) rectangle (12.2, 1.8);
-\node[align=center, font=\footnotesize\bfseries, green!50!black] at (10.75, 1.5) {THz Band};
-\node[align=center, font=\footnotesize, green!50!black] at (10.75, 1.0) {Collective molecular};
-\node[align=center, font=\scriptsize, green!50!black] at (10.75, 0.65) {vibrations};
+% ---- THz Band box ----
+\fill[green!15, rounded corners=3pt] (9.2, 0.6) rectangle (12.3, 2.4);
+\draw[green!50!black, thick, rounded corners=3pt] (9.2, 0.6) rectangle (12.3, 2.4);
+\node[align=center, font=\small\bfseries, green!45!black] at (10.75, 2.0) {THz Band};
+\node[align=center, font=\footnotesize, green!45!black] at (10.75, 1.35) {Collective molecular};
+\node[align=center, font=\footnotesize, green!45!black] at (10.75, 0.85) {vibrations};
 
-% Molecular dynamics range
-\fill[orange!20, rounded corners=2pt] (7.5, 2.3) rectangle (13.3, 3.3);
-\node[align=center, font=\footnotesize\bfseries, orange!70!black] at (10.4, 3.0) {Molecular/Lattice Dynamics};
-\node[align=center, font=\scriptsize, orange!70!black] at (10.4, 2.6) {Protein vibrations, H-bond networks, microtubule modes};
+% ---- Optical/UV box ----
+\fill[violet!12, rounded corners=3pt] (13.5, 0.6) rectangle (16.2, 2.4);
+\draw[violet!60, thick, rounded corners=3pt] (13.5, 0.6) rectangle (16.2, 2.4);
+\node[align=center, font=\small\bfseries, violet!65!black] at (14.85, 2.0) {Optical / UV};
+\node[align=center, font=\footnotesize, violet!65!black] at (14.85, 1.35) {Electronic};
+\node[align=center, font=\footnotesize, violet!65!black] at (14.85, 0.85) {transitions};
 
-% Arrows connecting
-\draw[->, thick, orange!70!black] (7.5, 2.3) -- (7.5, 1.9);
-\draw[->, thick, orange!70!black] (13.3, 2.3) -- (13.3, 0.3);
+% ---- Molecular/Lattice Dynamics bar (above) ----
+\fill[orange!15, rounded corners=3pt] (6.5, 3.4) rectangle (16.0, 4.8);
+\draw[orange!60, thick, rounded corners=3pt] (6.5, 3.4) rectangle (16.0, 4.8);
+\node[align=center, font=\small\bfseries, orange!65!black] at (11.25, 4.35) {Molecular / Lattice Dynamics};
+\node[align=center, font=\scriptsize, orange!65!black] at (11.25, 3.75) {Protein vibrations, H-bond networks, microtubule modes};
 
-% Brace for gap
-\draw[decorate, decoration={brace, amplitude=8pt, mirror}, thick, red!60] (3.0, -0.8) -- (7.2, -0.8);
-\node[below, font=\scriptsize, red!70!black, align=center] at (5.1, -1.3) {Unexplored regime in\\living neural tissue};
+% Arrows from molecular bar down to axis region
+\draw[->, thick, orange!60] (8.0, 3.4) -- (8.0, 2.6);
+\draw[->, thick, orange!60] (14.5, 3.4) -- (14.5, 2.6);
 
-% Energy scale annotation for THz
-\draw[<-, thick, green!50!black] (10.75, 0.4) -- (10.75, -0.8);
-\node[below, font=\scriptsize, green!50!black, align=center] at (10.75, -1.3) {$E \approx 0.4$--$41$~meV\\$\lambda \approx 30$--$3000~\mu$m};
+% ---- Brace for gap (below axis) ----
+\draw[decorate, decoration={brace, amplitude=8pt, mirror}, thick, red!50] (3.8, -0.9) -- (7.5, -0.9);
+\node[below, font=\footnotesize, red!65!black, align=center] at (5.65, -1.5) {Unexplored regime in\\living neural tissue};
 
-% Optical/UV range
-\fill[violet!15, rounded corners=2pt] (13.5, 0.5) rectangle (15.5, 1.8);
-\node[align=center, font=\footnotesize\bfseries, violet!70!black] at (14.5, 1.5) {Optical/UV};
-\node[align=center, font=\scriptsize, violet!70!black] at (14.5, 1.0) {Electronic};
-\node[align=center, font=\scriptsize, violet!70!black] at (14.5, 0.7) {transitions};
-
-% Title
-\node[above, font=\normalsize\bfseries] at (8, 3.8) {Electromagnetic Frequency Hierarchy in Neural Systems};
+% ---- Energy scale annotation for THz (below axis) ----
+\draw[<-, thick, green!45!black] (10.75, 0.5) -- (10.75, -0.9);
+\node[below, font=\footnotesize, green!45!black, align=center] at (10.75, -1.5) {$E \approx 0.4$--$41$~meV\\$\lambda \approx 30$--$3000~\mu$m};
 
 \end{tikzpicture}
 \end{document}
