@@ -18,7 +18,17 @@
 \usepackage{setspace}
 \usepackage{fancyhdr}
 \usepackage{microtype}
-\usepackage[skip=5pt plus 2pt]{parskip}
+% Paragraph formatting: skip + indent (no indent after section titles)
+\setlength{\parskip}{6pt}
+\setlength{\parindent}{15pt}
+\makeatletter
+\let\orig@section\section
+\renewcommand{\section}{\@ifstar{\orig@section*}{\@dblarg{\my@section}}}
+\def\my@section[#1]#2{\orig@section[#1]{#2}\noindent\@afterindentfalse\@afterheading}
+\let\orig@subsection\subsection
+\renewcommand{\subsection}{\@ifstar{\orig@subsection*}{\@dblarg{\my@subsection}}}
+\def\my@subsection[#1]#2{\orig@subsection[#1]{#2}\noindent\@afterindentfalse\@afterheading}
+\makeatother
 \usepackage[numbers,sort&compress]{natbib}
 \usepackage{hyperref}
 \usepackage{cleveref}
@@ -186,9 +196,26 @@ These patterns reduce entropy locally while exporting entropy to the environment
 \subsection{From Circles to Tori: The Geometry of Periodic Coupling}
 
 The connection between oscillatory dynamics and toroidal geometry follows from elementary topology.
-A single periodic variable $\phi(t)$ with period $2\pi$ traces a trajectory on the circle $S^1$.
-When two independent periodic variables $\phi_1(t)$ and $\phi_2(t)$ are considered jointly, the state space of the combined system is the product manifold $S^1 \times S^1 = T^2$, which is the two-dimensional torus.
+Consider a single neural oscillator with phase variable $\theta_i(t)$ evolving as
+\begin{equation}\label{eq:oscillator}
+  \theta_i(t) = \omega_i t + \phi_i,
+\end{equation}
+where $\omega_i$ is the angular frequency and $\phi_i$ is the initial phase.
+Because $\theta_i$ is $2\pi$-periodic, it traces a trajectory on the circle $S^1$.
+When two independent oscillators with phases $\theta_1(t)$ and $\theta_2(t)$ are considered jointly, each evolving on its own $S^1$, the state space of the combined system is the product manifold
+\begin{equation}\label{eq:torus}
+  T^2 = S^1 \times S^1,
+\end{equation}
+which is the two-dimensional torus.
 More generally, $n$ coupled periodic variables define a trajectory on the $n$-torus $T^n = (S^1)^n$ \cite{Strogatz2015}.
+
+The torus $T^2$ can be embedded in three-dimensional Euclidean space via the standard parametric representation:
+\begin{align}
+  x(\theta, \phi) &= (R + r\cos\theta)\cos\phi, \label{eq:torus_x} \\
+  y(\theta, \phi) &= (R + r\cos\theta)\sin\phi, \label{eq:torus_y} \\
+  z(\theta, \phi) &= r\sin\theta, \label{eq:torus_z}
+\end{align}
+where $R$ is the major radius (distance from the center of the torus to the center of the tube) and $r$ is the minor radius (radius of the tube), with $\theta, \phi \in [0, 2\pi)$ corresponding to the two independent phase variables.
 
 This construction is not merely formal.
 Whenever a physical system contains multiple oscillatory degrees of freedom, the natural state space for describing their joint dynamics is a torus.
@@ -208,7 +235,13 @@ The Kuramoto model \cite{Kuramoto1984, Strogatz2000} provides a canonical exampl
 \subsection{The KAM Framework and Attractor Stability}
 
 The persistence of toroidal motion under perturbation is guaranteed by the Kolmogorov--Arnold--Moser (KAM) theorem \cite{Kolmogorov1954, Arnold1963, Moser1962}.
-In its classical formulation, the KAM theorem states that for a Hamiltonian system with $n$ degrees of freedom, if the unperturbed system is integrable (meaning it possesses $n$ independent constants of motion in involution), then most invariant tori carrying quasi-periodic motion survive under sufficiently small perturbations, provided the frequency vector satisfies a Diophantine condition:
+For an integrable Hamiltonian system, each degree of freedom evolves quasi-periodically on an invariant torus according to
+\begin{equation}\label{eq:quasiperiodic}
+  \theta_i(t) = \omega_i t + \theta_{i,0}, \quad i = 1, \ldots, n,
+\end{equation}
+where $\theta_{i,0}$ are initial phases and $\bm{\omega} = (\omega_1, \ldots, \omega_n)$ is the frequency vector.
+Trajectories remain confined to these invariant tori provided the frequencies are sufficiently incommensurate.
+The KAM theorem states that for a Hamiltonian system with $n$ degrees of freedom, if the unperturbed system is integrable (meaning it possesses $n$ independent constants of motion in involution), then most invariant tori carrying quasi-periodic motion of the form~\eqref{eq:quasiperiodic} survive under sufficiently small perturbations, provided the frequency vector satisfies a Diophantine condition:
 \begin{equation}\label{eq:diophantine}
   |\bm{k} \cdot \bm{\omega}| \geq \frac{\gamma}{|\bm{k}|^\tau}, \quad \forall\, \bm{k} \in \mathbb{Z}^n \setminus \{\bm{0}\},
 \end{equation}
@@ -224,8 +257,15 @@ The coexistence of ordered toroidal regions and chaotic layers produces a mixed 
 
 The theoretical framework of continuous attractor neural networks (CANNs) provides a complementary perspective on toroidal structure in neural systems \cite{Wu2016}.
 In a CANN, the network possesses a continuous family of stable states parameterized by one or more variables.
+The defining feature of a CANN is a stable activity bump: a localized pattern of elevated firing that can be positioned at any point along the attractor manifold.
+This bump moves continuously across the manifold in response to velocity inputs, maintaining a coherent representation of the encoded variable without discrete transitions between states.
 For a network encoding a single circular variable (such as head direction), the attractor manifold is $S^1$.
 For a network encoding two circular variables (such as the two periodic coordinates of a grid cell module), the attractor manifold is $T^2$ \cite{Yoon2013}.
+
+The reason the torus appears specifically in grid cell networks follows directly from the periodicity of the spatial code.
+Each grid cell fires at regularly spaced locations, and the spatial phase of this firing pattern wraps around with the grid spacing, producing a cyclic variable on $S^1$.
+Because the hexagonal grid pattern is periodic in two independent spatial directions, there are two such cyclic phase variables.
+Their joint state space is $S^1 \times S^1 = T^2$, and the activity bump of the CANN moves on this torus as the animal navigates through space.
 
 The critical distinction between the KAM perspective and the CANN perspective is the source of the toroidal structure.
 In the KAM framework, toroidal motion arises from the intrinsic dynamics of coupled oscillators.
