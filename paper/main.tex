@@ -19,7 +19,7 @@
 \usepackage{fancyhdr}
 \usepackage{microtype}
 % Paragraph formatting: skip + indent (no indent after section titles)
-\setlength{\parskip}{4pt plus 1pt}
+\setlength{\parskip}{6pt}
 \setlength{\parindent}{15pt}
 \makeatletter
 \let\orig@section\section
@@ -156,7 +156,7 @@ Di Sarra et al.\ \cite{DiSarra2025} demonstrated that oscillatory mechanisms pla
 
 \subsection{The Electromagnetic Basis of Biological Dynamics}
 
-All interactions in biological systems are fundamentally electromagnetic in character.
+At molecular and cellular scales, biological interactions are predominantly electromagnetic.
 Chemical bonds arise from the overlap of electron wavefunctions governed by Coulomb forces; hydrogen bonds reflect dipole interactions; van der Waals forces result from fluctuating charge distributions \cite{Frohlich1968}.
 The distinction between ``chemical'' and ``electromagnetic'' descriptions is one of abstraction level rather than ontological category.
 By maintaining the electromagnetic framework as the base physical layer, it becomes possible to move continuously between molecular dynamics, neural activity, field interactions, and entropy flows without changing the fundamental descriptive language.
@@ -223,13 +223,13 @@ Consider a single neural oscillator with phase variable $\theta_i(t)$ evolving a
 \begin{equation}\label{eq:oscillator}
   \theta_i(t) = \omega_i t + \phi_i,
 \end{equation}
-where $\omega_i$ is the angular frequency and $\phi_i$ is the initial phase.
+where $\theta_i(t)$ is the instantaneous phase of the $i$-th oscillator, $\omega_i$ is its angular frequency, and $\phi_i$ is the initial phase offset.
 Because $\theta_i$ is $2\pi$-periodic, it traces a trajectory on the circle $S^1$.
 When two independent oscillators with phases $\theta_1(t)$ and $\theta_2(t)$ are considered jointly, each evolving on its own $S^1$, the state space of the combined system is the product manifold
 \begin{equation}\label{eq:torus}
   T^2 = S^1 \times S^1,
 \end{equation}
-which is the two-dimensional torus.
+which is the two-dimensional torus. Two independent oscillators, each evolving on $S^1$, jointly span this product manifold because their combined state requires specifying two independent angles.
 More generally, $n$ coupled periodic variables define a trajectory on the $n$-torus $T^n = (S^1)^n$ \cite{Strogatz2015}.
 
 The torus $T^2$ can be embedded in three-dimensional Euclidean space via the standard parametric representation:
@@ -270,7 +270,7 @@ For an integrable Hamiltonian system, each degree of freedom evolves quasi-perio
 \end{equation}
 where $\theta_{i,0}$ are initial phases and $\bm{\omega} = (\omega_1, \ldots, \omega_n)$ is the frequency vector.
 Trajectories remain confined to these invariant tori provided the frequencies are sufficiently incommensurate.
-The KAM theorem addresses Hamiltonian systems with $n$ degrees of freedom. If the unperturbed system is integrable, then most invariant tori carrying quasi-periodic motion of the form~\eqref{eq:quasiperiodic} survive under sufficiently small perturbations. The key requirement is that the frequency vector satisfies a Diophantine condition:
+For sufficiently small perturbations and non-resonant frequency vectors, the majority of invariant tori persist. This is the content of the KAM theorem. The precise requirement is that the frequency vector satisfies a Diophantine condition:
 \begin{equation}\label{eq:diophantine}
   |\bm{k} \cdot \bm{\omega}| \geq \frac{\gamma}{|\bm{k}|^\tau}, \quad \forall\, \bm{k} \in \mathbb{Z}^n \setminus \{\bm{0}\},
 \end{equation}
@@ -313,7 +313,7 @@ The state of this system at any instant can be encoded as a unit quaternion:
 \begin{equation}\label{eq:phase_quat}
   q(t) = \cos\!\left(\frac{\Phi}{2}\right) + \sin\!\left(\frac{\Phi}{2}\right)\left(n_1\,\mathbf{i} + n_2\,\mathbf{j} + n_3\,\mathbf{k}\right),
 \end{equation}
-where $\Phi$ is a composite phase angle and $(n_1, n_2, n_3)$ is a unit vector determined by the relative phases.
+where $(n_1, n_2, n_3)$ is a unit axis vector satisfying $n_1^2 + n_2^2 + n_3^2 = 1$, $\Phi$ is the composite rotation angle derived from the relative phases, and $q$ is unit normalized ($|q| = 1$).
 The time evolution of $q(t)$ traces a trajectory on $S^3$.
 When the oscillators are quasi-periodic, this trajectory lies on a torus embedded in $S^3$, generalizing the two-dimensional toroidal dynamics to higher dimensions.
 
@@ -330,7 +330,7 @@ The dynamics can be written as:
 \begin{equation}\label{eq:quat_dynamics}
   \dot{q}(t) = \frac{1}{2}\,\bm{\Omega}(t)\,q(t),
 \end{equation}
-where $\bm{\Omega}(t)$ is a pure quaternion encoding the instantaneous angular velocity vector.
+where $\bm{\Omega}(t) = \omega_1\,\mathbf{i} + \omega_2\,\mathbf{j} + \omega_3\,\mathbf{k}$ is a pure quaternion encoding the instantaneous angular velocity vector.
 For uncoupled oscillators, $\bm{\Omega}$ is constant and the solution is a uniform flow on $T^3$.
 Coupling between the oscillators introduces frequency-dependent corrections to $\bm{\Omega}$, producing the same type of quasi-periodic dynamics on perturbed tori that the KAM theorem describes in the Hamiltonian setting.
 
@@ -395,6 +395,7 @@ Collective oscillatory modes in this frequency range can interact with mesoscopi
 Fr\"{o}hlich \cite{Frohlich1968} proposed that biological systems supplied with constant metabolic energy can produce coherent longitudinal electric modes in the frequency region between $10^{11}$ and $10^{12}$~s$^{-1}$.
 Subsequent terahertz spectroscopy studies have confirmed that biological macromolecules exhibit collective vibrational modes in this frequency range \cite{Markelz2008}.
 Sahu et al.\ \cite{Sahu2013} reported electromagnetic resonance measurements on single brain microtubules, identifying oscillatory behavior at frequencies consistent with lattice vibrational modes.
+The existence of coherent Fr\"ohlich modes in living neural tissue remains an open experimental question.
 
 The key observation is that current neuroscience instrumentation was not designed to detect signals in this intermediate range.
 The terahertz band is of particular interest because it corresponds to collective vibrational modes of biological structures, and THz spectroscopy may reveal previously unobserved electromagnetic dynamics in neural tissue that are relevant to the synchronization landscape of macroscopic oscillatory activity.
@@ -436,6 +437,7 @@ This gut-brain axis is bidirectional: descending vagal efferents modulate gut mo
 
 The argument advanced here goes beyond the established observation that the gut and brain are coupled \cite{Cryan2019, Bonaz2018, Dinan2017}.
 The proposal is that the evolutionary pressure imposed by the need to manage a complex, fluctuating internal microbial ecosystem was a contributing driver of the neural pruning, hierarchical organization, and recursive internal modeling capacity that characterizes the mammalian brain.
+The microbiome argument is presented as a plausible evolutionary pressure rather than a single causal driver.
 
 An organism hosting a complex gut microbiome faces a continuous regulatory challenge.
 The microbial ecosystem must be maintained within a functional range: too little microbial diversity compromises nutrient extraction and immune function; too much pathogenic activity threatens the host.
@@ -479,7 +481,7 @@ Continuous entropy management & Low-dimensional attractor manifolds \\
 Julian Jaynes \cite{Jaynes1976} proposed that human consciousness, in the modern introspective sense, is a relatively recent development in human history, emerging approximately 3,000 years ago during the late Bronze Age.
 In Jaynes's account, earlier humans operated in a ``bicameral'' mode in which the right hemisphere generated auditory verbal hallucinations, experienced as the voices of gods or ancestors, that directed behavior. The left hemisphere executed these commands without the mediating layer of introspective self-awareness that characterizes modern consciousness.
 
-The specific historical claims of Jaynes's theory remain debated, and the present paper does not depend on their accuracy.
+The historical interpretation remains debated, but the computational distinction Jaynes identified is relevant.
 What the Jaynesian framework usefully identifies is a computational transition: the emergence of a mode of neural processing in which the system can represent and reflect upon its own internal states.
 The distinction between a neural architecture that cannot distinguish internally generated signals from external ones and an architecture that can is a genuine computational distinction with physical consequences.
 
@@ -542,6 +544,7 @@ The entropy production rate $\dot{S}$ of a neural system can be decomposed into 
 \begin{equation}\label{eq:entropy_balance}
   \dot{S} = \dot{S}_i + \dot{S}_e.
 \end{equation}
+$S$ denotes thermodynamic entropy measured in units of Boltzmann's constant.
 For a system maintaining a steady-state dissipative structure, $\dot{S} = 0$, which requires $\dot{S}_e = -\dot{S}_i < 0$: the system must export entropy at a rate equal to its internal entropy production.
 
 \subsection{Entropy Gradients and Attractor Selection}
@@ -593,7 +596,7 @@ The synthesis presented in the preceding sections yields several concrete, exper
 If the toroidal attractor framework reflects a general organizational principle, then persistent cohomology analysis applied to large-scale population recordings from other brain regions should reveal toroidal or higher-genus manifold structure.
 Candidate regions include the prefrontal cortex during working memory maintenance, the motor cortex during rhythmic movement, and the hippocampus during temporal sequence encoding \cite{Bellmund2018}.
 
-\textbf{Prediction 2: Quaternion-like coupling structure in multi-band oscillatory data.}
+\textbf{Prediction 2: Phase coupling structure consistent with quaternion algebra in multi-band oscillatory data.}
 If three or more oscillatory bands are simultaneously coupled in a manner consistent with quaternion dynamics, then the phase relationships should exhibit the non-commutative structure characteristic of quaternion multiplication.
 This prediction can be tested using multi-electrode recordings with simultaneous theta, alpha, and gamma band decomposition \cite{Tort2009}.
 
@@ -662,10 +665,10 @@ The modular oscillatory organization described in Thread 3 provides the physical
 This capacity for source attribution is the minimal form of recursive self-reference, enabled by the same toroidal attractor dynamics (Thread 1) operating under entropy constraints (Thread 2) that were shaped by evolutionary pressure from the gut-brain axis (Thread 4).
 
 \textbf{The G\"odel connection.}
-The recursive self-reference that characterizes introspective consciousness has a structural parallel in G\"odel's incompleteness theorems \cite{Godel1931}.
+Introspective consciousness has a structural parallel in G\"odel's incompleteness theorems \cite{Godel1931}.
 Sufficiently complex recursive systems, whether formal or physical, exhibit a common feature: self-reference generates both computational power and fundamental limitations.
-The toroidal attractor geometry provides a physical substrate for this recursive structure. Quasi-periodic trajectories on tori continuously revisit previous states without exact repetition, creating a form of approximate self-reference that is richer than periodicity but bounded by the topology of the manifold.
-As Hofstadter \cite{Hofstadter1979} argued, the recursive self-referential structure is a characteristic feature of systems capable of introspective representation.
+The toroidal attractor geometry provides a physical substrate for this recursion. Quasi-periodic trajectories on tori continuously revisit previous states without exact repetition, creating a form of approximate self-reference bounded by the topology of the manifold.
+As Hofstadter \cite{Hofstadter1979} argued, this recursive structure is a characteristic feature of systems capable of introspective representation.
 
 These five threads converge on a single conclusion.
 Grid cells empirically demonstrate that neural population dynamics can reside on toroidal manifolds.
