@@ -123,7 +123,7 @@ Their joint state space is $S^1 \times S^1 = T^2$, and the activity bump of the 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{figures/fig_grid_cell_hex.pdf}
-\caption{Grid cell hexagonal firing pattern. (A) Spatial firing fields of a single grid cell, showing elevated firing rates at regularly spaced locations forming a hexagonal lattice within the arena. (B) The hexagonal lattice structure defined by two basis vectors $\mathbf{e}_1$ and $\mathbf{e}_2$ separated by $60^\circ$, with characteristic grid spacing $\lambda$. (C) The periodic spatial code wraps each spatial direction modulo $\lambda$, producing two cyclic phase variables $\phi_1, \phi_2 \in S^1$. Their joint state space is the two-torus $T^2 = S^1 \times S^1$.}
+\caption{Grid cell hexagonal firing pattern. (A) Spatial firing fields of a single grid cell, showing elevated firing rates at regularly spaced locations forming a hexagonal lattice within the arena. (B) The hexagonal lattice structure defined by two basis vectors $\mathbf{e}_1$ and $\mathbf{e}_2$ separated by $60°$, with characteristic grid spacing $\lambda$. (C) The periodic spatial code wraps each spatial direction modulo $\lambda$, producing two cyclic phase variables $\phi_1, \phi_2 \in S^1$. Their joint state space is the two-torus $T^2 = S^1 \times S^1$.}
 \label{fig:grid_cell_hex}
 \end{figure}
 
@@ -587,79 +587,6 @@ Systems that achieve the same computational function on lower-dimensional attrac
 %% ============================================================
 %% SECTION 11: TESTABLE PREDICTIONS
 %% ============================================================
-\section{Empirical Validation and Ablation Studies}\label{sec:pipeline}
-
-To validate the theoretical framework and demonstrate the extraction of toroidal manifolds from empirical data, we developed a complete, reproducible computational pipeline. The pipeline processes raw grid cell recordings, constructs firing rate maps, extracts the population manifold, computes topological features, and evaluates entropy metrics across biological scales.
-
-\subsection{Datasets and Preprocessing}
-We analyzed two publicly available grid cell datasets to compare the effects of population size on manifold reconstruction:
-1. The classic tetrode recordings from Hafting et al.\ (2005) \cite{Hafting2005}, providing high-resolution spatial firing maps for small numbers of neurons (e.g., 13 neurons).
-2. The Neuropixels recordings from Gardner et al.\ (2022) \cite{Gardner2022}, providing simultaneous recordings of hundreds of grid cells organized into discrete modules (e.g., 166 neurons in Module 1 of Rat R).
-
-Preprocessing involved extracting position data and spike timestamps, aligning spikes to the nearest position sample, and removing all NaN values. The continuous position data was used to compute occupancy maps, while the aligned spike data provided the raw spike counts.
-
-\subsection{Firing Rate Maps and Spatial Smoothing}
-For each neuron, we constructed spatial firing rate maps by dividing the arena into a $50 \times 50$ grid. The raw spike count in each bin was divided by the occupancy time to compute the raw firing rate. To account for sampling noise and reveal the underlying spatial structure, we applied Gaussian smoothing ($\sigma = 2.0$) to the raw rate maps. Figure~\ref{fig:rate_maps} shows representative rate maps from both datasets, confirming the characteristic hexagonal firing fields of grid cells.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/fig1_rate_maps.pdf}
-\caption{Grid cell firing rate maps. (A) Representative rate maps from the Hafting et al.\ (2005) dataset (tetrode recordings, 13 neurons). (B) Representative rate maps from the Gardner et al.\ (2022) dataset (Neuropixels recordings, Rat R Day 1). Both datasets exhibit clear spatial firing patterns, though peak rates differ due to recording conditions and session durations.}
-\label{fig:rate_maps}
-\end{figure}
-
-\subsection{Manifold Extraction and Persistent Homology}
-To extract the population manifold, we constructed an activity matrix of shape (timepoints, neurons) using 25~ms time bins. We applied Principal Component Analysis (PCA) and Uniform Manifold Approximation and Projection (UMAP) to reduce the dimensionality of the population activity.
-
-We then applied persistent homology using the Ripser algorithm to the reduced manifolds. Persistent homology computes the topological features of the data across multiple spatial scales, generating persistence barcodes and diagrams. The presence of long-lived features in the first homology group ($H_1$) indicates the existence of circular voids, which are the topological signatures of a toroidal manifold ($T^2 = S^1 \times S^1$).
-
-As shown in Figure~\ref{fig:manifold_topology}, the Gardner dataset (Module 1, 166 neurons) exhibits strong $H_1$ features in both PCA and UMAP spaces. The maximum $H_1$ persistence in PCA space was 1.069, with 441 total $H_1$ features detected, providing robust evidence for the toroidal topology of the population activity.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/fig2_manifold_topology.pdf}
-\caption{Population manifold and topological analysis for Gardner et al.\ (2022) Module 1 (166 neurons). (A) 3D PCA embedding showing a distributed point cloud. (B) 3D UMAP embedding showing a more compact cluster. (C) Persistence diagram for the PCA embedding, revealing numerous $H_0$ (blue) and $H_1$ (orange) features. (D) Barcode of the top 30 $H_1$ features, with the maximum persistence reaching 1.069, indicative of significant loop structure.}
-\label{fig:manifold_topology}
-\end{figure}
-
-\subsection{Cross-Module Topological Comparison}
-We extended the topological analysis across five distinct grid cell modules from two rats in the Gardner dataset. As shown in Figure~\ref{fig:cross_module}, all five modules exhibited maximum $H_1$ persistence values greater than 1.0 in PCA space, confirming that the toroidal structure is a consistent property across different neural populations. In contrast, the 13-neuron Hafting dataset yielded a maximum $H_1$ persistence of only 0.669 in PCA space, demonstrating that large-scale simultaneous recordings are necessary to reliably reconstruct the population manifold.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/fig3_cross_module.pdf}
-\caption{Cross-module topological comparison. (A) Maximum $H_1$ persistence across five grid cell modules in PCA and UMAP spaces. All modules show PCA $H_1$ persistence $> 1.0$. (B) Cumulative variance explained by the top 3 principal components (8.3\% to 11.8\%). (C) Comparison of topological signal strength between the 13-neuron Hafting dataset and the 100+ neuron Gardner modules. (D) Total number of $H_1$ features detected in PCA space for each module.}
-\label{fig:cross_module}
-\end{figure}
-
-\subsection{Entropy Across Biological Scales}
-To connect the neural dynamics to the broader thermodynamic framework, we computed entropy metrics across multiple biological scales. For the neural data, we calculated the mean neural entropy (0.26 bits), spatial entropy of the rate maps (10.86 bits), and temporal entropy of the spike trains (6.51 bits).
-
-To evaluate the evolutionary pressure argument regarding the gut microbiome, we analyzed 3,107 stool samples from the American Gut Project. The gut microbiome exhibited a mean Shannon entropy of 5.17 bits, with a strong correlation ($r = 0.836, p < 0.001$) between species richness and entropy. Figure~\ref{fig:microbiome_entropy} illustrates this multi-scale entropy gradient, supporting the hypothesis that neural systems must manage complex internal environments through low-dimensional attractor dynamics.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/fig4_microbiome_entropy.pdf}
-\caption{Entropy analysis across biological scales. (A) Distribution of Shannon entropy in the gut microbiome (American Gut Project, n=3,107). (B) Strong correlation between species richness and Shannon entropy in the microbiome. (C) Comparison of entropy values across neural, spatial, temporal, and microbiome scales. (D) Conceptual framework illustrating the entropy gradient from molecular oscillations to organism behavior, with the population manifold serving as a low-entropy bottleneck.}
-\label{fig:microbiome_entropy}
-\end{figure}
-
-\subsection{Ablation Studies}
-To rigorously test the robustness of the manifold extraction, we conducted three ablation studies on the Gardner Module 1 data (Figure~\ref{fig:ablation}):
-
-\textbf{1. Population Size:} We evaluated the effect of neuron count on $H_1$ persistence by subsampling the population. The maximum $H_1$ persistence only exceeded 1.0 when the full population of 166 neurons was included, confirming that the toroidal topology is a collective property that cannot be reliably detected from small subsets of cells.
-
-\textbf{2. Randomized Spikes:} We destroyed the temporal correlations in the data by randomly circularly shifting the spike times for each neuron independently. The real data yielded an $H_1$ persistence of 1.183, while the shuffled data averaged only 0.415. This 2.85-fold reduction confirms that the topological signal reflects genuine population structure rather than noise.
-
-\textbf{3. Temporal Resolution:} We varied the bin size used to construct the activity matrix from 10~ms to 500~ms. The $H_1$ persistence remained robust ($> 0.86$) across all tested resolutions, peaking at 1.183 with a 25~ms bin size, indicating that the toroidal manifold is stable across a range of temporal scales.
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=\textwidth]{figures/fig5_ablation.pdf}
-\caption{Ablation studies on Gardner Module 1. (A) Effect of population size on maximum $H_1$ persistence and PCA variance. The full population is required to achieve persistence $> 1.0$. (B) Comparison of $H_1$ persistence between real data and five independent circular shuffles, demonstrating the destruction of the topological signal upon randomization. (C) Effect of temporal bin size on $H_1$ persistence, showing robustness across resolutions with a peak at 25~ms.}
-\label{fig:ablation}
-\end{figure}
-
 \section{Testable Predictions and Experimental Program}\label{sec:predictions}
 
 A theoretical framework is only as valuable as the predictions it generates.
